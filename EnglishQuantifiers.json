@@ -1,0 +1,6 @@
+{
+  "quantifiers": {
+    "all": ["subset","A","B"],
+    "most": [">"]
+  }
+}
