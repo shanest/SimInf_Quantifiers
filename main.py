@@ -5,6 +5,7 @@ from itertools import chain,combinations
 from collections import namedtuple
 import numpy as np
 import random
+import matplotlib.pyplot as plt
 
 
 Operator = namedtuple("Operator", "func inputTypes outputType")
@@ -18,6 +19,11 @@ operators = {
     ">": Operator(
         lambda model, x, y: x > y,
         [float,float],
+        bool
+    ),
+    ">i": Operator(
+        lambda model, x, y: x > y,
+        [int,int],
         bool
     ),
     "/": Operator(
@@ -37,8 +43,23 @@ operators = {
     ),
     "intersection": Operator(
         lambda model, x, y: x & y,
-        [set,set],
+        [set, set],
         set
+    ),
+    "union": Operator(
+        lambda model, x, y: x | y,
+        [set, set],
+        set
+    ),
+    "and": Operator(
+        lambda model, x, y: x and y,
+        [bool, bool],
+        bool
+    ),
+    "or": Operator(
+        lambda model, x, y: x or y,
+        [bool, bool],
+        bool
     )
 }
 
@@ -48,7 +69,7 @@ def powerset(iterable):
     return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
 
 
-model_size = 4
+model_size = 7
 M = set(range(model_size))
 
 M_powerset = list(powerset(M))
@@ -103,35 +124,21 @@ operatorsByReturnType = {
 for (name, operator) in operators.items():
     operatorsByReturnType[operator.outputType].append((name,operator))
 
-# for q in np.arange(0, 1, .1):
-#     operatorsByReturnType[float].append(Operator(
-#         Primitives.create_num_func(q),
-#         [],
-#         float
-#     ))
-#
-# for set_name in ['A', 'B']:
-#     operatorsByReturnType[set].append(Operator(
-#         Primitives.create_set_func(set_name),
-#         [],
-#         set
-#     ))
-
 
 def generate_expression(return_type, size):
     if size == 0:
         if return_type == int:
             x = random.choice(range(model_size))
-            return Expression(x,Primitives.create_value_func(x))
+            return Expression(x, Primitives.create_value_func(x))
         if return_type == float:
             q = random.choice(np.arange(0, 1, .1))
-            return Expression(q,Primitives.create_value_func(q))
+            return Expression(q, Primitives.create_value_func(q))
         if return_type == set:
-            set_name = random.choice(['A','B'])
-            return Expression(set_name,Primitives.create_set_func(set_name))
+            set_name = random.choice(['A', 'B'])
+            return Expression(set_name, Primitives.create_set_func(set_name))
         if return_type == bool:
-            boolean = random.choice([True,False])
-            return Expression(boolean,Primitives.create_value_func(boolean))
+            boolean = random.choice([True, False])
+            return Expression(boolean, Primitives.create_value_func(boolean))
 
     (name, operator) = random.choice(operatorsByReturnType[return_type])
 
@@ -144,26 +151,45 @@ def generate_expression(return_type, size):
 
     return Expression(name, operator.func, *arg_expressions)
 
+
+generated_quantifier_expressions = []
 for i in range(100):
-    quantifier_expressions[str(i)] = generate_expression(bool,5)
-    print(quantifier_expressions[str(i)].to_string())
+    generated_quantifier_expressions.append(generate_expression(bool, 8))
+    print("{0}: {1}".format(i,generated_quantifier_expressions[i].to_string()))
+
 
 # Measure complexity of each quantifier
-complexity = {}
-for name, expression in quantifier_expressions.items():
-    complexity[name] = expression.length()
+def calculate_complexity(expression):
+    return expression.length()/10
+
 
 # Measure communicative cost of each quantifier
-cost = {}
-for name, expression in quantifier_expressions.items():
+def calculate_communicative_cost(expression):
     true_count = 0
     for model in models:
         if expression.evaluate(model):
             true_count += 1
-    cost[name] = true_count / len(models)
+    return true_count / len(models) if true_count > 0 else 1
 
 
+cost = {}
+complexity = {}
+for name, expression in quantifier_expressions.items():
+    cost[name] = calculate_communicative_cost(expression)
+    complexity[name] = calculate_complexity(expression)
+
+generated_cost = []
+generated_complexity = []
+for expression in generated_quantifier_expressions:
+    generated_cost.append(calculate_communicative_cost(expression))
+    generated_complexity.append(calculate_complexity(expression))
 
 # Plot
-print(complexity)
-print(cost)
+plt.plot(cost.values(),complexity.values(),'o')
+plt.plot(generated_cost,generated_complexity,'o',color='grey')
+
+for i in range(100):
+    plt.annotate(str(i),(generated_cost[i],generated_complexity[i]))
+
+plt.axis([0,1,0,1])
+plt.show()
