@@ -2,14 +2,44 @@ import json
 from Expression import *
 from GeneralizedQuantifierModel import *
 from itertools import chain,combinations
+from collections import namedtuple
+import numpy as np
+import random
 
-string_to_function = {
-    "subset": lambda model, x, y: x <= y,
-    ">": lambda model, x, y: x > y,
-    "/": lambda model, x, y: x / y if y > 0 else 0,
-    "-": lambda model, x, y: x - y,
-    "card": lambda model, x: len(x),
-    "intersection": lambda model, x, y: x & y,
+
+Operator = namedtuple("Operator", "func inputTypes outputType")
+
+operators = {
+    "subset": Operator(
+        lambda model, x, y: x <= y,
+        [set,set],
+        bool
+    ),
+    ">": Operator(
+        lambda model, x, y: x > y,
+        [float,float],
+        bool
+    ),
+    "/": Operator(
+        lambda model, x, y: x / y if y > 0 else 0,
+        [int,int],
+        float
+    ),
+    "diff": Operator(
+        lambda model, x, y: x - y,
+        [set,set],
+        set
+    ),
+    "card": Operator(
+        lambda model, x: len(x),
+        [set],
+        int
+    ),
+    "intersection": Operator(
+        lambda model, x, y: x & y,
+        [set,set],
+        set
+    )
 }
 
 
@@ -32,14 +62,14 @@ for A in M_powerset:
 
 def parse_expression(spec):
     if isinstance(spec, list):
-        func = string_to_function[spec[0]]
+        func = operators[spec[0]].func
         arg_expressions = []
         for arg_spec in spec[1:]:
             arg_expressions.append(parse_expression(arg_spec))
         return Expression(spec[0], func, *arg_expressions)
 
     if isinstance(spec, float):
-        func = Primitives.create_num_func(spec)
+        func = Primitives.create_value_func(spec)
         return Expression(spec, func)
 
     if isinstance(spec, str):
@@ -64,7 +94,59 @@ quantifier_specs = data['quantifiers']
 quantifier_expressions = parse_quantifiers(quantifier_specs)
 
 # Generate quantifiers
+operatorsByReturnType = {
+    set: [],
+    bool: [],
+    float: [],
+    int: []
+}
+for (name, operator) in operators.items():
+    operatorsByReturnType[operator.outputType].append((name,operator))
 
+# for q in np.arange(0, 1, .1):
+#     operatorsByReturnType[float].append(Operator(
+#         Primitives.create_num_func(q),
+#         [],
+#         float
+#     ))
+#
+# for set_name in ['A', 'B']:
+#     operatorsByReturnType[set].append(Operator(
+#         Primitives.create_set_func(set_name),
+#         [],
+#         set
+#     ))
+
+
+def generate_expression(return_type, size):
+    if size == 0:
+        if return_type == int:
+            x = random.choice(range(model_size))
+            return Expression(x,Primitives.create_value_func(x))
+        if return_type == float:
+            q = random.choice(np.arange(0, 1, .1))
+            return Expression(q,Primitives.create_value_func(q))
+        if return_type == set:
+            set_name = random.choice(['A','B'])
+            return Expression(set_name,Primitives.create_set_func(set_name))
+        if return_type == bool:
+            boolean = random.choice([True,False])
+            return Expression(boolean,Primitives.create_value_func(boolean))
+
+    (name, operator) = random.choice(operatorsByReturnType[return_type])
+
+    arg_expressions = []
+    size_left = size-1
+    for arg_type in operator.inputTypes:
+        arg_size = random.choice(range(size_left)) if size_left > 0 else 0
+        size_left -= arg_size
+        arg_expressions.append(generate_expression(arg_type, arg_size))
+
+    return Expression(name, operator.func, *arg_expressions)
+
+for i in range(100):
+    quantifier_expressions[str(i)] = generate_expression(bool,5)
+    print(quantifier_expressions[str(i)].to_string())
 
 # Measure complexity of each quantifier
 complexity = {}
@@ -79,6 +161,8 @@ for name, expression in quantifier_expressions.items():
         if expression.evaluate(model):
             true_count += 1
     cost[name] = true_count / len(models)
+
+
 
 # Plot
 print(complexity)
