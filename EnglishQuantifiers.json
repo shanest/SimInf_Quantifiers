@@ -1,6 +1,6 @@
 {
   "quantifiers": {
     "all": ["subset","A","B"],
-    "most": [">"]
+    "most": [">",["/",["card",["intersection","A","B"]],["card","A"]],0.5]
   }
 }

@@ -3,19 +3,22 @@ from Expression import *
 from GeneralizedQuantifierModel import *
 from itertools import chain,combinations
 
-string_to__expression_type = {
-    "A": PrimitiveExpression,
-    "B": PrimitiveExpression,
-    "M": PrimitiveExpression,
-    "subset": SubsetExpression
+string_to_function = {
+    "subset": lambda model, x, y: x <= y,
+    ">": lambda model, x, y: x > y,
+    "/": lambda model, x, y: x / y if y > 0 else 0,
+    "-": lambda model, x, y: x - y,
+    "card": lambda model, x: len(x),
+    "intersection": lambda model, x, y: x & y,
 }
 
+
 def powerset(iterable):
-    "powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"
     s = list(iterable)
     return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
 
-model_size = 7
+
+model_size = 4
 M = set(range(model_size))
 
 M_powerset = list(powerset(M))
@@ -26,21 +29,24 @@ for A in M_powerset:
     for B in M_powerset:
         models.append(GeneralizedQuantifierModel(M, set(A), set(B)))
 
-def parse_expression(spec):
-    if isinstance(spec[0],str):
-        expression_type = string_to__expression_type[spec[0]]
-    else
-        expression_type = NumberExpression
 
-    if len(spec) == 1:
-        return expression_type(spec[0])
-    if len(spec) == 2:
-        arg1 = parse_expression(spec[1])
-        return expression_type(arg1)
-    if len(spec) == 3:
-        arg1 = parse_expression(spec[1])
-        arg2 = parse_expression(spec[2])
-        return expression_type(arg1, arg2)
+def parse_expression(spec):
+    if isinstance(spec, list):
+        func = string_to_function[spec[0]]
+        arg_expressions = []
+        for arg_spec in spec[1:]:
+            arg_expressions.append(parse_expression(arg_spec))
+        return Expression(spec[0], func, *arg_expressions)
+
+    if isinstance(spec, float):
+        func = Primitives.create_num_func(spec)
+        return Expression(spec, func)
+
+    if isinstance(spec, str):
+        func = Primitives.create_set_func(spec)
+        return Expression(spec, func)
+
+    raise ValueError('Unexpected input format. Should be integer, string or list.')
 
 
 def parse_quantifiers(specs):
@@ -66,15 +72,14 @@ for name, expression in quantifier_expressions.items():
     complexity[name] = expression.length()
 
 # Measure communicative cost of each quantifier
-informativeness = {}
+cost = {}
 for name, expression in quantifier_expressions.items():
     true_count = 0
     for model in models:
         if expression.evaluate(model):
             true_count += 1
-
-informativeness[name] = true_count / len(models)
+    cost[name] = true_count / len(models)
 
 # Plot
 print(complexity)
-print(informativeness)
+print(cost)
