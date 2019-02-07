@@ -2,83 +2,24 @@ import json
 from Expression import *
 from GeneralizedQuantifierModel import *
 from itertools import chain,combinations
-from collections import namedtuple
 import numpy as np
 import random
 import matplotlib.pyplot as plt
-
-
-Operator = namedtuple("Operator", "func inputTypes outputType")
-
-operators = {
-    "subset": Operator(
-        lambda model, x, y: x <= y,
-        [set,set],
-        bool
-    ),
-    ">": Operator(
-        lambda model, x, y: x > y,
-        [float,float],
-        bool
-    ),
-    ">i": Operator(
-        lambda model, x, y: x > y,
-        [int,int],
-        bool
-    ),
-    "/": Operator(
-        lambda model, x, y: x / y if y > 0 else 0,
-        [int,int],
-        float
-    ),
-    "diff": Operator(
-        lambda model, x, y: x - y,
-        [set,set],
-        set
-    ),
-    "card": Operator(
-        lambda model, x: len(x),
-        [set],
-        int
-    ),
-    "intersection": Operator(
-        lambda model, x, y: x & y,
-        [set, set],
-        set
-    ),
-    "union": Operator(
-        lambda model, x, y: x | y,
-        [set, set],
-        set
-    ),
-    "and": Operator(
-        lambda model, x, y: x and y,
-        [bool, bool],
-        bool
-    ),
-    "or": Operator(
-        lambda model, x, y: x or y,
-        [bool, bool],
-        bool
-    )
-}
-
+from Operator import operators,operatorsByReturnType
 
 def powerset(iterable):
     s = list(iterable)
     return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
 
 
-model_size = 7
-M = set(range(model_size))
-
-M_powerset = list(powerset(M))
-
-models = []
-
-for A in M_powerset:
-    for B in M_powerset:
-        models.append(GeneralizedQuantifierModel(M, set(A), set(B)))
+def generate_models(size):
+    M = set(range(size))
+    M_powerset = list(powerset(M))
+    models = []
+    for A in M_powerset:
+        for B in M_powerset:
+            models.append(GeneralizedQuantifierModel(M, set(A), set(B)))
+    return models
 
 
 def parse_expression(spec):
@@ -107,28 +48,10 @@ def parse_quantifiers(specs):
     return quantifier_expressions
 
 
-# Read lexicalized quantifiers from data file
-with open('EnglishQuantifiers.json') as json_file:
-    data = json.load(json_file)
-
-quantifier_specs = data['quantifiers']
-quantifier_expressions = parse_quantifiers(quantifier_specs)
-
-# Generate quantifiers
-operatorsByReturnType = {
-    set: [],
-    bool: [],
-    float: [],
-    int: []
-}
-for (name, operator) in operators.items():
-    operatorsByReturnType[operator.outputType].append((name,operator))
-
-
-def generate_expression(return_type, size):
+def generate_expression(return_type, size, max_integer):
     if size == 0:
         if return_type == int:
-            x = random.choice(range(model_size))
+            x = random.choice(range(max_integer))
             return Expression(x, Primitives.create_value_func(x))
         if return_type == float:
             q = random.choice(np.arange(0, 1, .1))
@@ -147,42 +70,58 @@ def generate_expression(return_type, size):
     for arg_type in operator.inputTypes:
         arg_size = random.choice(range(size_left)) if size_left > 0 else 0
         size_left -= arg_size
-        arg_expressions.append(generate_expression(arg_type, arg_size))
+        arg_expressions.append(generate_expression(arg_type, arg_size, max_integer))
 
     return Expression(name, operator.func, *arg_expressions)
 
 
-generated_quantifier_expressions = []
-for i in range(100):
-    generated_quantifier_expressions.append(generate_expression(bool, 8))
-    print("{0}: {1}".format(i,generated_quantifier_expressions[i].to_string()))
-
-
 # Measure complexity of each quantifier
-def calculate_complexity(expression):
-    return expression.length()/10
+def calculate_complexity(expression, designated_quantifier_length):
+    return expression.length()/(designated_quantifier_length+2)
 
 
 # Measure communicative cost of each quantifier
-def calculate_communicative_cost(expression):
+def calculate_communicative_cost(expression, universe):
     true_count = 0
-    for model in models:
+    for model in universe:
         if expression.evaluate(model):
             true_count += 1
-    return true_count / len(models) if true_count > 0 else 1
+    return true_count / len(universe) if true_count > 0 else 1
 
 
+# Parameters
+model_size = 4
+designated_quantifier_length = 8
+
+# Initialize universe
+universe = generate_models(model_size)
+
+# Read lexicalized quantifiers from data file
+with open('EnglishQuantifiers.json') as json_file:
+    data = json.load(json_file)
+
+quantifier_specs = data['quantifiers']
+quantifier_expressions = parse_quantifiers(quantifier_specs)
+
+# Generate quantifiers
+generated_quantifier_expressions = []
+for i in range(100):
+    generated_quantifier_expressions.append(generate_expression(bool, designated_quantifier_length, model_size))
+    print("{0}: {1}".format(i, generated_quantifier_expressions[i].to_string()))
+
+# Measure cost and complexity for non-generated quantifiers
 cost = {}
 complexity = {}
 for name, expression in quantifier_expressions.items():
-    cost[name] = calculate_communicative_cost(expression)
-    complexity[name] = calculate_complexity(expression)
+    cost[name] = calculate_communicative_cost(expression,universe)
+    complexity[name] = calculate_complexity(expression,designated_quantifier_length)
 
+# Measure cost and complexity for generated quantifiers
 generated_cost = []
 generated_complexity = []
 for expression in generated_quantifier_expressions:
-    generated_cost.append(calculate_communicative_cost(expression))
-    generated_complexity.append(calculate_complexity(expression))
+    generated_cost.append(calculate_communicative_cost(expression,universe))
+    generated_complexity.append(calculate_complexity(expression,designated_quantifier_length))
 
 # Plot
 plt.plot(cost.values(),complexity.values(),'o')
