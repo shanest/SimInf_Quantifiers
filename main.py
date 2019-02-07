@@ -6,6 +6,7 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 from Operator import operators,operatorsByReturnType
+import pickle
 
 def powerset(iterable):
     s = list(iterable)
@@ -30,7 +31,7 @@ def parse_expression(spec):
             arg_expressions.append(parse_expression(arg_spec))
         return Expression(spec[0], func, *arg_expressions)
 
-    if isinstance(spec, float):
+    if isinstance(spec, float) or isinstance(spec, int):
         func = Primitives.create_value_func(spec)
         return Expression(spec, func)
 
@@ -76,8 +77,8 @@ def generate_expression(return_type, size, max_integer):
 
 
 # Measure complexity of each quantifier
-def calculate_complexity(expression, designated_quantifier_length):
-    return expression.length()/(designated_quantifier_length+2)
+def calculate_complexity(expression):
+    return expression.length()/10
 
 
 # Measure communicative cost of each quantifier
@@ -90,8 +91,8 @@ def calculate_communicative_cost(expression, universe):
 
 
 # Parameters
-model_size = 4
-designated_quantifier_length = 8
+model_size = 7
+designated_quantifier_lengths = [2,3,4,5,6,7,8]
 
 # Initialize universe
 universe = generate_models(model_size)
@@ -105,29 +106,46 @@ quantifier_expressions = parse_quantifiers(quantifier_specs)
 
 # Generate quantifiers
 generated_quantifier_expressions = []
-for i in range(100):
-    generated_quantifier_expressions.append(generate_expression(bool, designated_quantifier_length, model_size))
-    print("{0}: {1}".format(i, generated_quantifier_expressions[i].to_string()))
+for length in designated_quantifier_lengths:
+    for i in range(100):
+        generated_quantifier_expressions.append(generate_expression(bool, length, model_size))
 
 # Measure cost and complexity for non-generated quantifiers
 cost = {}
 complexity = {}
 for name, expression in quantifier_expressions.items():
     cost[name] = calculate_communicative_cost(expression,universe)
-    complexity[name] = calculate_complexity(expression,designated_quantifier_length)
+    complexity[name] = calculate_complexity(expression)
+    plt.annotate(name,(cost[name],complexity[name]))
+
+with open('./data/lexicalized_quantifiers_cost.txt', 'w') as f:
+    for (name,value) in cost.items():
+        f.write("{0}: {1}\n".format(name, value))
+
+with open('./data/lexicalized_quantifiers_complexity.txt', 'w') as f:
+    for (name,value) in complexity.items():
+        f.write("{0}: {1}\n".format(name, value))
+
 
 # Measure cost and complexity for generated quantifiers
 generated_cost = []
 generated_complexity = []
 for expression in generated_quantifier_expressions:
     generated_cost.append(calculate_communicative_cost(expression,universe))
-    generated_complexity.append(calculate_complexity(expression,designated_quantifier_length))
+    generated_complexity.append(calculate_complexity(expression))
+
+with open('./data/generated_quantifiers.txt', 'w') as f:
+    for (i, expression) in enumerate(generated_quantifier_expressions):
+        f.write("{0}: {1}\n".format(i, expression.to_string()))
+
+np.savetxt('./data/generated_quantifiers_cost.txt',generated_cost)
+np.savetxt('./data/generated_quantifiers_complexity.txt',generated_complexity)
 
 # Plot
 plt.plot(cost.values(),complexity.values(),'o')
 plt.plot(generated_cost,generated_complexity,'o',color='grey')
 
-for i in range(100):
+for i in range(len(generated_quantifier_expressions)):
     plt.annotate(str(i),(generated_cost[i],generated_complexity[i]))
 
 plt.axis([0,1,0,1])
