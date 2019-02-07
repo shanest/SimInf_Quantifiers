@@ -8,13 +8,23 @@ operators = {
         [set,set],
         bool
     ),
-    ">": Operator(
+    ">f": Operator(
         lambda model, x, y: x > y,
         [float,float],
         bool
     ),
-    ">i": Operator(
+    ">": Operator(
         lambda model, x, y: x > y,
+        [int,int],
+        bool
+    ),
+    ">=": Operator(
+        lambda model, x, y: x >= y,
+        [int,int],
+        bool
+    ),
+    "=": Operator(
+        lambda model, x, y: x is y,
         [int,int],
         bool
     ),
