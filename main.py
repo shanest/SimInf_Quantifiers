@@ -6,7 +6,7 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 from Operator import operators,operatorsByReturnType
-import pickle
+import json
 
 def powerset(iterable):
     s = list(iterable)
@@ -107,7 +107,7 @@ quantifier_expressions = parse_quantifiers(quantifier_specs)
 # Generate quantifiers
 generated_quantifier_expressions = []
 for length in designated_quantifier_lengths:
-    for i in range(100):
+    for i in range(50):
         generated_quantifier_expressions.append(generate_expression(bool, length, model_size))
 
 # Measure cost and complexity for non-generated quantifiers
@@ -135,18 +135,18 @@ for expression in generated_quantifier_expressions:
     generated_complexity.append(calculate_complexity(expression))
 
 with open('./data/generated_quantifiers.txt', 'w') as f:
-    for (i, expression) in enumerate(generated_quantifier_expressions):
-        f.write("{0}: {1}\n".format(i, expression.to_string()))
+    for expression in generated_quantifier_expressions:
+        f.write("{0}\n".format(expression.to_string()))
 
 np.savetxt('./data/generated_quantifiers_cost.txt',generated_cost)
 np.savetxt('./data/generated_quantifiers_complexity.txt',generated_complexity)
 
 # Plot
-plt.plot(cost.values(),complexity.values(),'o')
 plt.plot(generated_cost,generated_complexity,'o',color='grey')
+plt.plot(cost.values(),complexity.values(),'o')
 
-for i in range(len(generated_quantifier_expressions)):
-    plt.annotate(str(i),(generated_cost[i],generated_complexity[i]))
+# for i in range(len(generated_quantifier_expressions)):
+#     plt.annotate(str(i),(generated_cost[i],generated_complexity[i]))
 
 plt.axis([0,1,0,1])
 plt.show()
