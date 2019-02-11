@@ -118,11 +118,11 @@ for name, expression in quantifier_expressions.items():
     complexity[name] = calculate_complexity(expression)
     plt.annotate(name,(cost[name],complexity[name]))
 
-with open('./data/lexicalized_quantifiers_cost.txt', 'w') as f:
+with open('./results/lexicalized_quantifiers_cost.txt', 'w') as f:
     for (name,value) in cost.items():
         f.write("{0}: {1}\n".format(name, value))
 
-with open('./data/lexicalized_quantifiers_complexity.txt', 'w') as f:
+with open('./results/lexicalized_quantifiers_complexity.txt', 'w') as f:
     for (name,value) in complexity.items():
         f.write("{0}: {1}\n".format(name, value))
 
@@ -134,12 +134,12 @@ for expression in generated_quantifier_expressions:
     generated_cost.append(calculate_communicative_cost(expression,universe))
     generated_complexity.append(calculate_complexity(expression))
 
-with open('./data/generated_quantifiers.txt', 'w') as f:
+with open('./results/generated_quantifiers.txt', 'w') as f:
     for expression in generated_quantifier_expressions:
         f.write("{0}\n".format(expression.to_string()))
 
-np.savetxt('./data/generated_quantifiers_cost.txt',generated_cost)
-np.savetxt('./data/generated_quantifiers_complexity.txt',generated_complexity)
+np.savetxt('./results/generated_quantifiers_cost.txt',generated_cost)
+np.savetxt('./results/generated_quantifiers_complexity.txt',generated_complexity)
 
 # Plot
 plt.plot(generated_cost,generated_complexity,'o',color='grey')

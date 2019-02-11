@@ -1,5 +1,5 @@
 .idea
 __pycache__
 .DS_Store
-data
-data/*
+results
+results/*
