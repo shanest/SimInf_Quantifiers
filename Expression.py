@@ -17,13 +17,13 @@ class Expression:
             arg_values.append(arg_expression.evaluate(model))
         return self.func(model, *arg_values)
 
-    def to_string(self):
+    def __str__(self):
         if len(self.arg_expressions) is 0:
-            return self.name
+            return str(self.name)
         if len(self.arg_expressions) is 1:
-            return "{0}({1})".format(self.name,self.arg_expressions[0].to_string())
+            return "{0}({1})".format(self.name, self.arg_expressions[0])
         if len(self.arg_expressions) is 2:
-            return "{0}({1},{2})".format(self.name, self.arg_expressions[0].to_string(), self.arg_expressions[1].to_string())
+            return "{0}({1},{2})".format(self.name, self.arg_expressions[0], self.arg_expressions[1])
 
     def to_name_structure(self):
         if len(self.arg_expressions) is 0:

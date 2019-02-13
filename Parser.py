@@ -1,5 +1,6 @@
 from Expression import *
 from Operator import operators
+from Quantifier import Quantifier
 
 
 def parse_expression(spec):
@@ -22,7 +23,11 @@ def parse_expression(spec):
 
 
 def parse_quantifiers(specs):
-    quantifier_expressions = {}
+    quantifiers = {}
     for (name, spec) in specs.items():
-        quantifier_expressions[name] = parse_expression(spec)
-    return quantifier_expressions
+        if spec['presupposition'] is None:
+            presupposition = None
+        else:
+            presupposition = parse_expression(spec['presupposition'])
+        quantifiers[name] = Quantifier(parse_expression(spec['expression']), presupposition)
+    return quantifiers
