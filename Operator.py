@@ -62,6 +62,11 @@ operators = {
         lambda model, x, y: x or y,
         [bool, bool],
         bool
+    ),
+    "not": Operator(
+        lambda model, x: not x,
+        [bool, bool],
+        bool
     )
 }
 
