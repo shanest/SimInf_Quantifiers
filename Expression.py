@@ -25,6 +25,12 @@ class Expression:
         if len(self.arg_expressions) is 2:
             return "{0}({1},{2})".format(self.name, self.arg_expressions[0].to_string(), self.arg_expressions[1].to_string())
 
+    def to_name_structure(self):
+        if len(self.arg_expressions) is 0:
+            return self.name
+
+        return [self.name, *[expression.to_name_structure() for expression in self.arg_expressions]]
+
 
 class Primitives:
 

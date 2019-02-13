@@ -4,6 +4,8 @@ from Expression import *
 import random
 import numpy as np
 from Operator import operatorsByReturnType
+import Generator
+import Measurer
 
 
 def powerset(iterable):
@@ -45,9 +47,36 @@ def generate_expression(return_type, size, max_integer):
 
     arg_expressions = []
     size_left = size-1
-    for arg_type in operator.inputTypes:
-        arg_size = random.choice(range(size_left)) if size_left > 0 else 0
+    for (i,arg_type) in enumerate(operator.inputTypes):
+        if i+1 is len(operator.inputTypes):
+            arg_size = size_left
+        else:
+            arg_size = random.choice(range(size_left)) if size_left > 0 else 0
         size_left -= arg_size
         arg_expressions.append(generate_expression(arg_type, arg_size, max_integer))
 
     return Expression(name, operator.func, *arg_expressions)
+
+
+def generate_unique_expressions(lengths, amount_per_length, max_integer, universe):
+    generated_quantifier_by_meaning = {}
+    for length in lengths:
+        print("Start generating length {0}".format(length))
+        for i in range(amount_per_length):
+            new_better_expression = False
+            while not new_better_expression:
+                expression = Generator.generate_expression(bool, length, max_integer)
+                meaning = tuple([expression.evaluate(model) for model in universe])
+
+                if meaning in generated_quantifier_by_meaning.keys():
+                    other_expression = generated_quantifier_by_meaning[meaning]
+
+                    this_complexity = Measurer.measure_complexity(expression)
+                    other_complexity = Measurer.measure_complexity(other_expression)
+                    if this_complexity > other_complexity:
+                        continue
+
+                generated_quantifier_by_meaning[meaning] = expression
+                new_better_expression = True
+
+    return list(generated_quantifier_by_meaning.values())

@@ -8,6 +8,9 @@ import Measurer
 # Parameters
 model_size = 7
 designated_quantifier_lengths = [2,3,4,5,6,7,8]
+generate_new_quantifiers = True
+
+universe = Generator.generate_models(model_size)
 
 # Read lexicalized quantifiers from data file
 with open('EnglishQuantifiers.json') as json_file:
@@ -17,13 +20,22 @@ quantifier_specs = data['quantifiers']
 quantifier_expressions = Parser.parse_quantifiers(quantifier_specs)
 
 # Generate quantifiers
-generated_quantifier_expressions = []
-for length in designated_quantifier_lengths:
-    for i in range(50):
-        generated_quantifier_expressions.append(Generator.generate_expression(bool, length, model_size))
+if generate_new_quantifiers:
+    generated_quantifier_expressions = \
+        Generator.generate_unique_expressions(designated_quantifier_lengths, 20, model_size, universe)
+
+    with open('results/GeneratedQuantifiers.json', 'w') as file:
+        gq_dict = {"{0}".format(i): expression.to_name_structure() for (i,expression) in enumerate(generated_quantifier_expressions)}
+        json.dump({'quantifiers': gq_dict}, file, indent=4)
+
+else:
+    with open('results/GeneratedQuantifiers.json') as json_file:
+        data = json.load(json_file)
+
+    generated_quantifier_specs = data['quantifiers']
+    generated_quantifier_expressions = Parser.parse_quantifiers(generated_quantifier_specs).values()
 
 # Measure cost and complexity for non-generated quantifiers
-universe = Generator.generate_models(model_size)
 
 cost = {}
 complexity = {}
