@@ -1,3 +1,6 @@
+from collections import namedtuple
+
+
 class GeneralizedQuantifierModel:
 
     def __init__(self, M, A, B):
@@ -9,3 +12,6 @@ class GeneralizedQuantifierModel:
 
     def get_set(self, model_set_name):
         return self.dictionary[model_set_name]
+
+
+SimplifiedQuantifierModel = namedtuple("SimpleifiedQuantfierModel", "A B AminusB AandB")

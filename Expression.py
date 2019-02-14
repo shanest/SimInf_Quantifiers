@@ -34,6 +34,13 @@ class Expression:
 
 class Primitives:
 
+    cardinality_functions = {
+        'A': lambda model: model.A,
+        'B': lambda model: model.B,
+        'A-B': lambda model: model.AminusB,
+        'A&B': lambda model: model.AandB
+    }
+
     @staticmethod
     def create_set_func(set_name):
         return lambda model: model.get_set(set_name)

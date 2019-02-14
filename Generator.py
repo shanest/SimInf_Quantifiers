@@ -25,11 +25,23 @@ def generate_models(size):
             models.append(GeneralizedQuantifierModel(M, set(A), set(B)))
     return models
 
+def generate_simplified_models(size):
+    models = []
+    for A in range(size+1):
+        for B in range(size+1):
+            for AminusB in range(0,A+1):
+                models.append(SimplifiedQuantifierModel(A,B,AminusB,A-AminusB))
+    return models
+
 
 def generate_primitive_expression(return_type, max_integer):
     if return_type == int:
-        x = random.choice(range(max_integer))
-        return Expression(x, Primitives.create_value_func(x))
+        if random.random() < .5:
+            x = random.choice(range(max_integer))
+            return Expression(x, Primitives.create_value_func(x))
+        else:
+            x = random.choice(['A', 'B', 'A-B', 'A&B'])
+            return Expression(x, Primitives.cardinality_functions[x])
     if return_type == float:
         q = random.choice(np.arange(0, 1, .1))
         return Expression(q, Primitives.create_value_func(q))

@@ -16,7 +16,8 @@ def parse_expression(spec):
         return Expression(spec, func)
 
     if isinstance(spec, str):
-        func = Primitives.create_set_func(spec)
+        # func = Primitives.create_set_func(spec)
+        func = operators[spec].func
         return Expression(spec, func)
 
     raise ValueError('Unexpected input format. Should be integer, string or list.')

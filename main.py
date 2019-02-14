@@ -6,13 +6,13 @@ import Parser
 import Measurer
 
 # Parameters
-model_size = 20
-designated_quantifier_lengths = [2,3,4,5,6,7,8]
+model_size = 100
+designated_quantifier_lengths = [2, 3, 4, 5, 6, 7, 8]
 quantifiers_per_length = 50
 generate_new_quantifiers = True
 measure_informativeness_relatively = True
 presupposition_per_length_combination = 4
-presupposition_lengths = [2,3,4,5]
+presupposition_lengths = [2, 3, 4, 5]
 
 measure_communicative_cost = Measurer.measure_relative_communicative_cost if measure_informativeness_relatively \
     else Measurer.measure_communicative_cost
@@ -20,7 +20,7 @@ measure_communicative_cost = Measurer.measure_relative_communicative_cost if mea
 if presupposition_per_length_combination * len(presupposition_lengths) > quantifiers_per_length:
     raise ValueError('More presuppositions required than desired amount of quantifiers')
 
-universe = Generator.generate_models(model_size)
+universe = Generator.generate_simplified_models(model_size)
 
 # Read lexicalized quantifiers from data file
 with open('EnglishQuantifiers.json') as json_file:
