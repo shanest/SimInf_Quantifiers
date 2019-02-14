@@ -84,6 +84,9 @@ def generate_unique_quantifiers(lengths, amount_per_length, presupposition_lengt
 
                 meaning = tuple([quantifier.evaluate(model) for model in universe])
 
+                if False not in meaning or True not in meaning:
+                    continue
+
                 if meaning in generated_quantifier_by_meaning.keys():
                     other_quantifier = generated_quantifier_by_meaning[meaning]
 
@@ -92,7 +95,7 @@ def generate_unique_quantifiers(lengths, amount_per_length, presupposition_lengt
                     if this_complexity > other_complexity:
                         continue
 
-                generated_quantifier_by_meaning[meaning] = Quantifier(expression)
+                generated_quantifier_by_meaning[meaning] = quantifier
                 new_better_expression = True
 
     return list(generated_quantifier_by_meaning.values())

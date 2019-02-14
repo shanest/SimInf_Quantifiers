@@ -6,12 +6,12 @@ import Parser
 import Measurer
 
 # Parameters
-model_size = 7
+model_size = 20
 designated_quantifier_lengths = [2,3,4,5,6,7,8]
-quantifiers_per_length = 20
+quantifiers_per_length = 50
 generate_new_quantifiers = True
 measure_informativeness_relatively = True
-presupposition_per_length_combination = 2
+presupposition_per_length_combination = 4
 presupposition_lengths = [2,3,4,5]
 
 measure_communicative_cost = Measurer.measure_relative_communicative_cost if measure_informativeness_relatively \
@@ -44,6 +44,8 @@ if generate_new_quantifiers:
     with open('results/GeneratedQuantifiers.json', 'w') as file:
         gq_dict = {"{0}".format(i): quantifier.to_name_structure() for (i, quantifier) in enumerate(generated_quantifiers)}
         json.dump({'quantifiers': gq_dict}, file, indent=2)
+
+    print('Generation finished')
 
 else:
     with open('results/GeneratedQuantifiers.json') as json_file:
