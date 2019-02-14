@@ -29,9 +29,10 @@ def measure_expression_complexity(expression):
 #     return true_count / len(universe) if true_count > 0 else 1
 
 def measure_communicative_cost(meaning):
-    return meaning.count(True)/len(meaning)
+    true_count = meaning.count(True)
+    return true_count/len(meaning) if true_count > 0 else 1
 
 def measure_relative_communicative_cost(meaning):
     true_count = meaning.count(True)
     false_count = meaning.count(False)
-    return true_count / (true_count + false_count)
+    return true_count / (true_count + false_count) if true_count > 0 else 1
