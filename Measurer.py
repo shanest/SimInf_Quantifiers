@@ -6,7 +6,7 @@ def measure_expression_complexity(expression):
     return expression.length()/20 if expression is not None else 0
 
 
-def measure_communicative_cost(quantifier, universe):
+def measure_relative_communicative_cost(quantifier, universe):
     true_count = 0
     total_count = 0
     for model in universe:
@@ -16,3 +16,12 @@ def measure_communicative_cost(quantifier, universe):
             true_count += 1 if truth_value else 0
 
     return true_count / total_count if true_count > 0 else 1
+
+
+def measure_communicative_cost(quantifier, universe):
+    true_count = 0
+    for model in universe:
+        if quantifier.evaluate(model) is True:
+            true_count += 1
+
+    return true_count / len(universe) if true_count > 0 else 1

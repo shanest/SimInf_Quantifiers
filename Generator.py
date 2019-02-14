@@ -1,5 +1,7 @@
+from collections import namedtuple
+
 from GeneralizedQuantifierModel import *
-from itertools import chain, combinations, permutations
+from itertools import chain, combinations, product
 from Expression import *
 import random
 import numpy as np
@@ -59,16 +61,26 @@ def generate_expression(return_type, size, max_integer):
     return Expression(name, operator.func, *arg_expressions)
 
 
-def generate_unique_quantifiers(lengths, amount_per_length, max_integer, universe):
+def generate_unique_quantifiers(lengths, amount_per_length, presupposition_lengths, amount_per_length_combination, max_integer, universe):
     generated_quantifier_by_meaning = {}
-    for (expression_length, presupposition_length) in permutations(lengths, 2):
-        print("Start generating length {0},{1}".format(presupposition_length,expression_length))
-        for i in range(amount_per_length):
+
+    QuantifierBlueprint = namedtuple("QuantifierBlueprint", "expression_length presupposition_length amount")
+    blueprints = [QuantifierBlueprint(expression_length, presupposition_length, amount_per_length_combination)
+                  for (expression_length, presupposition_length) in product(lengths, presupposition_lengths)]
+
+    leftover = amount_per_length - (amount_per_length_combination * len(presupposition_lengths))
+    blueprints.extend(QuantifierBlueprint(length, 0, leftover) for length in lengths)
+
+    for blueprint in blueprints:
+        print("Start generating length {0},{1}".format(blueprint.presupposition_length, blueprint.expression_length))
+        for i in range(blueprint.amount):
             new_better_expression = False
             while not new_better_expression:
-                expression = Generator.generate_expression(bool, expression_length, max_integer)
-                presupposition = Generator.generate_expression(bool, presupposition_length, max_integer) if presupposition_length > 0 else None
-                quantifier = Quantifier(expression,presupposition)
+                expression = Generator.generate_expression(bool, blueprint.expression_length, max_integer)
+                presupposition = Generator.generate_expression(bool, blueprint.presupposition_length, max_integer)\
+                    if blueprint.presupposition_length > 0 else None
+
+                quantifier = Quantifier(expression, presupposition)
 
                 meaning = tuple([quantifier.evaluate(model) for model in universe])
 

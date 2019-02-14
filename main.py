@@ -8,8 +8,17 @@ import Measurer
 # Parameters
 model_size = 7
 designated_quantifier_lengths = [2,3,4,5,6,7,8]
-quantifiers_per_length = 10
-generate_new_quantifiers = False
+quantifiers_per_length = 20
+generate_new_quantifiers = True
+measure_informativeness_relatively = True
+presupposition_per_length_combination = 2
+presupposition_lengths = [2,3,4,5]
+
+measure_communicative_cost = Measurer.measure_relative_communicative_cost if measure_informativeness_relatively \
+    else Measurer.measure_communicative_cost
+
+if presupposition_per_length_combination * len(presupposition_lengths) > quantifiers_per_length:
+    raise ValueError('More presuppositions required than desired amount of quantifiers')
 
 universe = Generator.generate_models(model_size)
 
@@ -23,7 +32,14 @@ quantifiers = Parser.parse_quantifiers(quantifier_specs)
 # Generate quantifiers
 if generate_new_quantifiers:
     generated_quantifiers = \
-        Generator.generate_unique_quantifiers(designated_quantifier_lengths, quantifiers_per_length, model_size, universe)
+        Generator.generate_unique_quantifiers(
+            designated_quantifier_lengths,
+            quantifiers_per_length,
+            presupposition_lengths,
+            presupposition_per_length_combination,
+            model_size,
+            universe
+        )
 
     with open('results/GeneratedQuantifiers.json', 'w') as file:
         gq_dict = {"{0}".format(i): quantifier.to_name_structure() for (i, quantifier) in enumerate(generated_quantifiers)}
@@ -41,7 +57,7 @@ else:
 cost = {}
 complexity = {}
 for name, quantifier in quantifiers.items():
-    cost[name] = Measurer.measure_communicative_cost(quantifier,universe)
+    cost[name] = measure_communicative_cost(quantifier,universe)
     complexity[name] = Measurer.measure_complexity(quantifier)
     plt.annotate(name,(cost[name],complexity[name]))
 
@@ -49,7 +65,7 @@ for name, quantifier in quantifiers.items():
 generated_cost = []
 generated_complexity = []
 for quantifier in generated_quantifiers:
-    generated_cost.append(Measurer.measure_communicative_cost(quantifier,universe))
+    generated_cost.append(measure_communicative_cost(quantifier,universe))
     generated_complexity.append(Measurer.measure_complexity(quantifier))
 
 
