@@ -1,4 +1,5 @@
 import json
+import pickle
 import Generator
 
 # Parameters
@@ -15,7 +16,7 @@ if presupposition_per_length_combination * len(presupposition_lengths) > quantif
 universe = Generator.generate_simplified_models(model_size)
 
 # Generate quantifiers
-generated_quantifiers = \
+generated_quantifiers, generated_meanings = \
     Generator.generate_unique_quantifiers(
         designated_quantifier_lengths,
         quantifiers_per_length,
@@ -25,8 +26,12 @@ generated_quantifiers = \
         universe
     )
 
+
 with open('results/GeneratedQuantifiers.json', 'w') as file:
     gq_dict = {"{0}".format(i): quantifier.to_name_structure() for (i, quantifier) in enumerate(generated_quantifiers)}
     json.dump({'quantifiers': gq_dict}, file, indent=2)
+
+with open('results/generated_meanings.pickle', 'wb') as file:
+    pickle.dump(generated_meanings, file)
 
 print('Generation finished')

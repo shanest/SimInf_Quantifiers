@@ -110,4 +110,4 @@ def generate_unique_quantifiers(lengths, amount_per_length, presupposition_lengt
                 generated_quantifier_by_meaning[meaning] = quantifier
                 new_better_expression = True
 
-    return list(generated_quantifier_by_meaning.values())
+    return list(generated_quantifier_by_meaning.values()), list(generated_quantifier_by_meaning.keys())
