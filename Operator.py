@@ -65,7 +65,12 @@ operators = {
     ),
     "not": Operator(
         lambda model, x: not x,
-        [bool, bool],
+        [bool],
+        bool
+    ),
+    "empty": Operator(
+        lambda model, x: len(x) is 0,
+        [set],
         bool
     )
 }
