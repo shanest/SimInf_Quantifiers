@@ -67,30 +67,31 @@ def measure(quantifiers, meanings):
 
 
 # Measure cost and complexity for generated quantifiers
-(generated_cost, generated_complexity) = measure(non_presupposed_quantifiers,non_presupposed_meanings)
+(non_presupposed_cost, non_presupposed_complexity) = measure(non_presupposed_quantifiers,non_presupposed_meanings)
 (presupposed_cost, presupposed_complexity) = measure(presupposed_quantifiers,presupposed_meanings)
+(generated_cost, generated_complexity) = measure(generated_quantifiers,generated_meanings)
 
 
 
 # Write results
-# with open('./results/lexicalized_quantifiers_cost.txt', 'w') as f:
-#     for (name,value) in cost.items():
-#         f.write("{0}: {1}\n".format(name, value))
-#
-# with open('./results/lexicalized_quantifiers_complexity.txt', 'w') as f:
-#     for (name,value) in complexity.items():
-#         f.write("{0}: {1}\n".format(name, value))
-#
-# with open('./results/generated_quantifiers.txt', 'w') as f:
-#     for quantifier in generated_quantifiers:
-#         f.write("{0}\n".format(quantifier))
-#
-# np.savetxt('./results/generated_quantifiers_cost.txt',generated_cost)
-# np.savetxt('./results/generated_quantifiers_complexity.txt',generated_complexity)
+with open('./results/lexicalized_quantifiers_cost.txt', 'w') as f:
+    for (name,value) in cost.items():
+        f.write("{0}: {1}\n".format(name, value))
+
+with open('./results/lexicalized_quantifiers_complexity.txt', 'w') as f:
+    for (name,value) in complexity.items():
+        f.write("{0}: {1}\n".format(name, value))
+
+with open('./results/generated_quantifiers.txt', 'w') as f:
+    for quantifier in generated_quantifiers:
+        f.write("{0}\n".format(quantifier))
+
+np.savetxt('./results/generated_quantifiers_cost.txt',generated_cost)
+np.savetxt('./results/generated_quantifiers_complexity.txt',generated_complexity)
 
 # Plot
 plt.plot(presupposed_cost,presupposed_complexity,'o',color='red')
-plt.plot(generated_cost,generated_complexity,'o',color='grey')
+plt.plot(non_presupposed_cost,non_presupposed_complexity,'o',color='grey')
 plt.plot(cost.values(),complexity.values(),'o')
 
 # for i in range(len(generated_quantifier_expressions)):

@@ -27,10 +27,10 @@ def generate_models(size):
 
 def generate_simplified_models(size):
     models = []
-    for A in range(size+1):
-        for B in range(size+1):
-            for AminusB in range(0,A+1):
-                models.append(SimplifiedQuantifierModel(A,B,AminusB,A-AminusB))
+    for AminusB in range(size+1):
+        for AandB in range(size+1-AminusB):
+            for BminusA in range(size+1-AminusB-AandB):
+                models.append(SimplifiedQuantifierModel(AminusB+AandB,BminusA+AandB,AminusB,AandB))
     return models
 
 

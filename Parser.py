@@ -1,3 +1,5 @@
+import json
+
 from Expression import *
 from Operator import operators
 from Quantifier import Quantifier
@@ -32,3 +34,11 @@ def parse_quantifiers(specs):
             presupposition = parse_expression(spec['presupposition'])
         quantifiers[name] = Quantifier(parse_expression(spec['expression']), presupposition)
     return quantifiers
+
+
+def load_from_file(filename):
+    with open(filename) as json_file:
+        data = json.load(json_file)
+
+    quantifier_specs = data['quantifiers']
+    return parse_quantifiers(quantifier_specs)

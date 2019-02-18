@@ -3,11 +3,11 @@ import pickle
 import Generator
 
 # Parameters
-model_size = 100
+model_size = 40
 designated_quantifier_lengths = [2, 3, 4, 5, 6, 7, 8]
-quantifiers_per_length = 50
+quantifiers_per_length = 100
 generate_new_quantifiers = True
-presupposition_per_length_combination = 4
+presupposition_per_length_combination = 10
 presupposition_lengths = [2, 3, 4, 5]
 
 if presupposition_per_length_combination * len(presupposition_lengths) > quantifiers_per_length:
