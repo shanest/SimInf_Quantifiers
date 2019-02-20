@@ -79,7 +79,7 @@ operators = {
         int
     ),
     "B": Operator(
-        lambda model: model.A,
+        lambda model: model.B,
         [],
         int
     ),
