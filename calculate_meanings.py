@@ -9,7 +9,7 @@ import Parser
 # generated_quantifier_specs = data['quantifiers']
 # generated_quantifiers = list(Parser.parse_quantifiers(generated_quantifier_specs).values())
 #
-universe_size = 40
+universe_size = 20
 
 universe = Generator.generate_simplified_models(universe_size)
 

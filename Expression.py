@@ -1,9 +1,21 @@
+from functools import lru_cache
+
+
 class Expression:
 
-    def __init__(self, name, func, *arg_expressions):
+    def __init__(self, name, func, *arg_expressions, is_constant=None):
         self.name = name
         self.func = func
         self.arg_expressions = arg_expressions
+
+        if is_constant is None:
+            args_constant = [arg.is_constant for arg in arg_expressions]
+            self.is_constant = len(args_constant) is not 0 and False not in args_constant
+        else:
+            self.is_constant = is_constant
+
+        if self.is_constant:
+            self.constant_value = func(None,*[arg_expression.evaluate(None) for arg_expression in arg_expressions])
 
     def length(self):
         total_length = 1
@@ -11,7 +23,11 @@ class Expression:
             total_length += arg_expression.length()
         return total_length
 
+    @lru_cache(maxsize=None)
     def evaluate(self, model):
+        if self.is_constant:
+            return self.constant_value
+
         arg_values = []
         for arg_expression in self.arg_expressions:
             arg_values.append(arg_expression.evaluate(model))

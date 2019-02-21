@@ -15,11 +15,11 @@ def parse_expression(spec):
 
     if isinstance(spec, float) or isinstance(spec, int):
         func = Primitives.create_value_func(spec)
-        return Expression(spec, func)
+        return Expression(spec, func, is_constant=True)
 
     if isinstance(spec, str):
         # func = Primitives.create_set_func(spec)
-        func = operators[spec].func
+        func = Primitives.cardinality_functions[spec]
         return Expression(spec, func)
 
     raise ValueError('Unexpected input format. Should be integer, string or list.')

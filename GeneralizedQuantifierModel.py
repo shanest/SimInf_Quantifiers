@@ -14,4 +14,4 @@ class GeneralizedQuantifierModel:
         return self.dictionary[model_set_name]
 
 
-SimplifiedQuantifierModel = namedtuple("SimpleifiedQuantfierModel", "A B AminusB AandB")
+SimplifiedQuantifierModel = namedtuple("SimplifiedQuantifierModel", "A B AminusB AandB")

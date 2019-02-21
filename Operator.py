@@ -10,27 +10,27 @@ operators = {
     # ),
     ">f": Operator(
         lambda model, x, y: x > y,
-        [float,float],
+        (float,float),
         bool
     ),
     ">": Operator(
         lambda model, x, y: x > y,
-        [int,int],
+        (int,int),
         bool
     ),
     ">=": Operator(
         lambda model, x, y: x >= y,
-        [int,int],
+        (int,int),
         bool
     ),
     "=": Operator(
         lambda model, x, y: x is y,
-        [int,int],
+        (int,int),
         bool
     ),
     "/": Operator(
         lambda model, x, y: x / y if y > 0 else 0,
-        [int,int],
+        (int,int),
         float
     ),
     # "diff": Operator(
@@ -55,17 +55,17 @@ operators = {
     # ),
     "and": Operator(
         lambda model, x, y: x and y,
-        [bool, bool],
+        (bool, bool),
         bool
     ),
     "or": Operator(
         lambda model, x, y: x or y,
-        [bool, bool],
+        (bool, bool),
         bool
     ),
     "not": Operator(
         lambda model, x: not x,
-        [bool],
+        (bool),
         bool
     ),
     # "empty": Operator(
@@ -73,26 +73,26 @@ operators = {
     #     [set],
     #     bool
     # )
-    "A": Operator(
-        lambda model: model.A,
-        [],
-        int
-    ),
-    "B": Operator(
-        lambda model: model.B,
-        [],
-        int
-    ),
-    "A-B": Operator(
-        lambda model: model.AminusB,
-        [],
-        int
-    ),
-    "A&B": Operator(
-        lambda model: model.AandB,
-        [],
-        int
-    ),
+    # "A": Operator(
+    #     lambda model: model.A,
+    #     [],
+    #     int
+    # ),
+    # "B": Operator(
+    #     lambda model: model.B,
+    #     [],
+    #     int
+    # ),
+    # "A-B": Operator(
+    #     lambda model: model.AminusB,
+    #     [],
+    #     int
+    # ),
+    # "A&B": Operator(
+    #     lambda model: model.AandB,
+    #     [],
+    #     int
+    # ),
 }
 
 operatorsByReturnType = {
@@ -101,5 +101,9 @@ operatorsByReturnType = {
     float: [],
     int: []
 }
+
+possibleInputTypes = []
+
 for (name, operator) in operators.items():
     operatorsByReturnType[operator.outputType].append((name,operator))
+    possibleInputTypes.append(operator.inputTypes)

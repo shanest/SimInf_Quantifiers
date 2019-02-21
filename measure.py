@@ -40,7 +40,7 @@ for (quantifier,meaning) in zip(generated_quantifiers, generated_meanings):
 
 measure_informativeness_relatively = True
 separate_presupposition = False
-universe_size = 100
+universe_size = 20
 
 universe = Generator.generate_simplified_models(universe_size)
 
