@@ -1,13 +1,14 @@
 from collections import namedtuple
+from functools import lru_cache
 
 Operator = namedtuple("Operator", "func inputTypes outputType")
 
 operators = {
-    # "subset": Operator(
-    #     lambda model, x, y: x <= y,
-    #     [set,set],
-    #     bool
-    # ),
+    "subset": Operator(
+        lambda model, x, y: x <= y,
+        [set,set],
+        bool
+    ),
     ">f": Operator(
         lambda model, x, y: x > y,
         (float,float),
@@ -33,26 +34,26 @@ operators = {
         (int,int),
         float
     ),
-    # "diff": Operator(
-    #     lambda model, x, y: x - y,
-    #     [set,set],
-    #     set
-    # ),
-    # "card": Operator(
-    #     lambda model, x: len(x),
-    #     [set],
-    #     int
-    # ),
-    # "intersection": Operator(
-    #     lambda model, x, y: x & y,
-    #     [set, set],
-    #     set
-    # ),
-    # "union": Operator(
-    #     lambda model, x, y: x | y,
-    #     [set, set],
-    #     set
-    # ),
+    "diff": Operator(
+        lambda model, x, y: x - y,
+        [set,set],
+        set
+    ),
+    "card": Operator(
+        lambda model, x: len(x),
+        [set],
+        int
+    ),
+    "intersection": Operator(
+        lambda model, x, y: x & y,
+        [set, set],
+        set
+    ),
+    "union": Operator(
+        lambda model, x, y: x | y,
+        [set, set],
+        set
+    ),
     "and": Operator(
         lambda model, x, y: x and y,
         (bool, bool),
@@ -68,42 +69,9 @@ operators = {
         (bool),
         bool
     ),
-    # "empty": Operator(
-    #     lambda model, x: len(x) is 0,
-    #     [set],
-    #     bool
-    # )
-    # "A": Operator(
-    #     lambda model: model.A,
-    #     [],
-    #     int
-    # ),
-    # "B": Operator(
-    #     lambda model: model.B,
-    #     [],
-    #     int
-    # ),
-    # "A-B": Operator(
-    #     lambda model: model.AminusB,
-    #     [],
-    #     int
-    # ),
-    # "A&B": Operator(
-    #     lambda model: model.AandB,
-    #     [],
-    #     int
-    # ),
+    "empty": Operator(
+        lambda model, x: len(x) is 0,
+        [set],
+        bool
+    )
 }
-
-operatorsByReturnType = {
-    set: [],
-    bool: [],
-    float: [],
-    int: []
-}
-
-possibleInputTypes = []
-
-for (name, operator) in operators.items():
-    operatorsByReturnType[operator.outputType].append((name,operator))
-    possibleInputTypes.append(operator.inputTypes)

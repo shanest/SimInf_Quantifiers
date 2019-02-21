@@ -1,0 +1,36 @@
+{
+  "quantifiers": {
+    "all": {
+      "presupposition": null,
+      "expression": ["=","A-B",0]
+    },
+    "most": {
+      "presupposition": null,
+      "expression": [">","A&B","A-B"]
+    },
+    "a": {
+      "presupposition": null,
+      "expression": [">=","A&B",1]
+    },
+    "many": {
+      "presupposition": null,
+      "expression": [">",["/","A&B","A"],0.25]
+    },
+    "no": {
+      "presupposition": null,
+      "expression": ["=","A&B",0]
+    },
+    "both": {
+      "presupposition": ["=","A",2],
+      "expression": ["=","A-B",0]
+    },
+    "neither": {
+      "presupposition": ["=","A",2],
+      "expression": ["=","A&B",0]
+    },
+    "the": {
+      "presupposition": ["=","A",1],
+      "expression": ["=","A-B",0]
+    }
+  }
+}
