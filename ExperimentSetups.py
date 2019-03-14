@@ -33,3 +33,14 @@ setup_1 = ExperimentSetup(
     Measurer.measure_complexity,
     [">f", ">", ">=", "=", "/", "and", "or", "not"]
 )
+
+setup_2 = ExperimentSetup(
+    'Setup2',
+    'EnglishQuantifiers_Setup2.json',
+    Generator.generate_simplified_models,
+    Generator.generate_simple_primitive_expressions_with_sets,
+    Parser.parse_simple_primitive_with_sets,
+    Measurer.measure_expression_complexity,
+    Measurer.measure_complexity,
+    [">f", ">", ">=", "=", "/", "and", "or", "not", "subset", "intersection", "union", "card", "diff", "empty"]
+)

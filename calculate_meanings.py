@@ -1,9 +1,9 @@
 import os
 import pickle
 import Parser
-from ExperimentSetups import setup_1
+from ExperimentSetups import setup_1, setup_2
 
-setup = setup_1
+setup = setup_2
 model_size = 20
 
 universe = setup.generate_models(model_size)

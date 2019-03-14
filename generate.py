@@ -4,10 +4,10 @@ import pickle
 import Generator
 
 # Parameters
-from ExperimentSetups import setup_1
+from ExperimentSetups import setup_1, setup_2
 from Quantifier import Quantifier
 
-setup = setup_1
+setup = setup_2
 max_quantifier_length = 6
 model_size = 20
 

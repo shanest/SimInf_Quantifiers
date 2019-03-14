@@ -1,4 +1,7 @@
 from collections import namedtuple
+from functools import lru_cache
+
+import SetPlaceholders
 
 
 class GeneralizedQuantifierModel:
@@ -15,3 +18,26 @@ class GeneralizedQuantifierModel:
 
 
 SimplifiedQuantifierModel = namedtuple("SimplifiedQuantifierModel", "A B AminusB AandB")
+
+cardinality_function = {
+    SetPlaceholders.A: lambda model: model.A,
+    SetPlaceholders.B: lambda model: model.B,
+    SetPlaceholders.AminusB: lambda model: model.AminusB,
+    SetPlaceholders.AandB: lambda model: model.AandB,
+    SetPlaceholders.BminusA: lambda model: model.B - model.AandB,
+    SetPlaceholders.AunionB: lambda model: model.B + model.AminusB,
+    SetPlaceholders.AunionBminusAandB: lambda model: model.B + model.AminusB - model.AandB,
+    SetPlaceholders.empty: lambda model: 0
+}
+
+
+def get_cardinality(model, set_placeholder):
+    return cardinality_function[set_placeholder](model)
+
+
+@lru_cache(maxsize=None)
+def subset(model, X, Y):
+    for placeholder in SetPlaceholders.representation[SetPlaceholders.minus(X, Y)]:
+        if get_cardinality(model, placeholder) > 0:
+            return False
+    return True

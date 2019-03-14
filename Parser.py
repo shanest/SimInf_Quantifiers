@@ -3,6 +3,7 @@ import json
 from Expression import *
 from Operator import operators
 from Quantifier import Quantifier
+from SetPlaceholders import SetPlaceholder
 
 
 def parse_simple_primitive(spec):
@@ -11,11 +12,20 @@ def parse_simple_primitive(spec):
         return Expression(spec, func, is_constant=True)
 
     if isinstance(spec, str):
-        # func = Primitives.create_set_func(spec)
         func = Primitives.cardinality_functions[spec]
         return Expression(spec, func)
 
     raise ValueError('Unsupported input type {0}'.format(type(spec)))
+
+
+def parse_simple_primitive_with_sets(spec):
+    if isinstance(spec, float) or isinstance(spec, int):
+        func = Primitives.create_value_func(spec)
+        return Expression(spec, func, is_constant=True)
+
+    if isinstance(spec, str):
+        func = Primitives.create_value_func(SetPlaceholder(spec))
+        return Expression(spec, func)
 
 
 def parse_expression(spec, setup):

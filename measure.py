@@ -7,13 +7,13 @@ import Measurer
 import Parser
 import matplotlib.pyplot as plt
 
-from ExperimentSetups import setup_1
+from ExperimentSetups import setup_1,setup_2
 
 measure_informativeness_relatively = True
 separate_presupposition = False
 max_quantifier_length = 6
 model_size = 20
-setup = setup_1
+setup = setup_2
 
 quantifiers = Parser.load_from_file(setup.lexical_quantifiers_filename, setup)
 

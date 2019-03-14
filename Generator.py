@@ -8,6 +8,7 @@ from Expression import *
 import numpy as np
 
 from Quantifier import Quantifier
+from SetPlaceholders import SetPlaceholder
 
 
 def powerset(iterable):
@@ -34,13 +35,33 @@ def generate_simplified_models(size):
 
 
 def generate_simple_primitive_expressions(max_integer):
-    expressions = {int: [], float: [], bool: [], set: []}
+    expressions = {int: [], float: [], bool: [], SetPlaceholder: []}
 
     for i in range(0, max_integer+1, 5):
         expressions[int].append(Expression(i, Primitives.create_value_func(i), is_constant=True))
 
     for set_name in ['A', 'B', 'A-B', 'A&B']:
         expressions[int].append(Expression(set_name, Primitives.cardinality_functions[set_name]))
+
+    for q in np.arange(0, 1, .1):
+        expressions[float].append(Expression(q, Primitives.create_value_func(q), is_constant=True))
+
+    for boolean in [True, False]:
+        expressions[bool].append(Expression(boolean, Primitives.create_value_func(boolean), is_constant=True))
+
+    return expressions
+
+
+def generate_simple_primitive_expressions_with_sets(max_integer):
+    expressions = {int: [], float: [], bool: [], SetPlaceholder: []}
+
+    for i in range(0, max_integer+1, 5):
+        expressions[int].append(Expression(i, Primitives.create_value_func(i), is_constant=True))
+
+    for set_name in ['A', 'B']:
+        expressions[SetPlaceholder].append(
+            Expression(set_name, Primitives.create_value_func(SetPlaceholder(set_name)))
+        )
 
     for q in np.arange(0, 1, .1):
         expressions[float].append(Expression(q, Primitives.create_value_func(q), is_constant=True))
@@ -58,7 +79,7 @@ def generate_all_primitive_expressions(setup, max_integer, universe):
         bool: {},
         int: {},
         float: {},
-        set: {}
+        SetPlaceholder: {}
     }
 
     return clean_expressions({1:expressions}, expressions_by_meaning, 1, universe)
@@ -89,7 +110,7 @@ def generate_all_expressions(setup, max_length, max_integer, universe, boolean=T
     expressions = smaller_expressions
     expressions[max_length] = {}
 
-    for returnType in [bool, int, float, set]:
+    for returnType in [bool, int, float, SetPlaceholder]:
         expressions[max_length][returnType] = []
 
     for (name, operator) in setup.operators.items():
@@ -110,7 +131,7 @@ class MeaningCalculator(object):
 
 def clean_expressions(expressions, expressions_by_meaning, length, universe):
 
-    for type in [bool, int, float, set]:
+    for type in [bool, int, float, SetPlaceholder]:
         print('cleaning {0} {1}s'.format(len(expressions[length][type]),str(type)))
         p = ProcessPool(nodes=4)
         new_meanings = p.map(MeaningCalculator(universe), expressions[length][type])
