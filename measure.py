@@ -11,7 +11,7 @@ from ExperimentSetups import setup_1
 
 measure_informativeness_relatively = True
 separate_presupposition = False
-max_quantifier_length = 4
+max_quantifier_length = 6
 model_size = 20
 setup = setup_1
 

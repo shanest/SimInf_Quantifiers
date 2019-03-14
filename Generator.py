@@ -7,6 +7,8 @@ from itertools import chain, combinations
 from Expression import *
 import numpy as np
 
+from Quantifier import Quantifier
+
 
 def powerset(iterable):
     s = list(iterable)
@@ -120,6 +122,7 @@ def clean_expressions(expressions, expressions_by_meaning, length, universe):
 
                 this_complexity = expression.length()
                 other_complexity = other_expression.length()
+
                 if this_complexity >= other_complexity:
                     expressions[length][type].remove(expression)
                     continue
@@ -132,3 +135,31 @@ def clean_expressions(expressions, expressions_by_meaning, length, universe):
 
     print('Finished cleaning step {0}'.format(length))
     return expressions, expressions_by_meaning
+
+
+def merge_meanings(presup_meaning, expr_meaning):
+    return tuple([e if p else None for (p, e) in zip(presup_meaning, expr_meaning)])
+
+
+def add_presuppositions(setup, expressions_by_meaning):
+
+    quantifiers_by_meaning = {meaning: Quantifier(expression) for (meaning,expression) in expressions_by_meaning.items()}
+
+    for (e_meaning, expression) in expressions_by_meaning.items():
+        for (p_meaning, presupposition) in expressions_by_meaning.items():
+            meaning = merge_meanings(p_meaning, e_meaning)
+            if True not in meaning or False not in meaning:
+                continue
+            quantifier = Quantifier(expression,presupposition)
+
+            if meaning in quantifiers_by_meaning.keys():
+                other_quantifier = quantifiers_by_meaning[meaning]
+
+                this_complexity = setup.measure_quantifier_complexity(quantifier)
+                other_complexity = setup.measure_quantifier_complexity(other_quantifier)
+                if this_complexity >= other_complexity:
+                    continue
+
+            quantifiers_by_meaning[meaning] = quantifier
+
+    return quantifiers_by_meaning

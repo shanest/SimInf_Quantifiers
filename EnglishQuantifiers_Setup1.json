@@ -14,7 +14,7 @@
     },
     "many": {
       "presupposition": null,
-      "expression": [">",["/","A&B","A"],0.25]
+      "expression": [">f",["/","A&B","A"],0.25]
     },
     "no": {
       "presupposition": null,

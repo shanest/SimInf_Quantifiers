@@ -8,14 +8,15 @@ import Parser
 
 class ExperimentSetup(object):
 
-    def __init__(self, name, lexical_quantifiers_filename, model_generator, primitive_generator, primitive_parser, expression_complexity_measurer, operators):
+    def __init__(self, name, lexical_quantifiers_filename, model_generator, primitive_generator, primitive_parser, expression_complexity_measurer, quantifier_complexity_measurer, operators):
         self.name = name
         self.lexical_quantifiers_filename = lexical_quantifiers_filename
         self.generate_models = model_generator
         self.generate_primitives = primitive_generator
         self.operators = {name: Operator.operators[name] for name in operators}
         self.parse_primitive = primitive_parser
-        self.expression_complexity_measurer = expression_complexity_measurer
+        self.measure_expression_complexity = expression_complexity_measurer
+        self.measure_quantifier_complexity = quantifier_complexity_measurer
 
         self.possible_input_types = []
         for (name, operator) in self.operators.items():
@@ -29,5 +30,6 @@ setup_1 = ExperimentSetup(
     Generator.generate_simple_primitive_expressions,
     Parser.parse_simple_primitive,
     Measurer.measure_expression_complexity,
+    Measurer.measure_complexity,
     [">f", ">", ">=", "=", "/", "and", "or", "not"]
 )
