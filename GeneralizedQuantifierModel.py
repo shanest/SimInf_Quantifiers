@@ -35,7 +35,6 @@ def get_cardinality(model, set_placeholder):
     return cardinality_function[set_placeholder](model)
 
 
-@lru_cache(maxsize=None)
 def subset(model, X, Y):
     for placeholder in SetPlaceholders.representation[SetPlaceholders.minus(X, Y)]:
         if get_cardinality(model, placeholder) > 0:

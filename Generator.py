@@ -1,3 +1,4 @@
+import itertools
 from copy import deepcopy, copy
 
 from pathos.pools import ProcessPool
@@ -85,13 +86,26 @@ def generate_all_primitive_expressions(setup, max_integer, universe):
     return clean_expressions({1:expressions}, expressions_by_meaning, 1, universe)
 
 
+def calculate_arg_length_options(arg_amount, total_length):
+    if arg_amount == 1:
+        return [[total_length]]
+
+    options = []
+    for last_arg_length in range(1,total_length-arg_amount+2):
+        for smaller_option in calculate_arg_length_options(arg_amount-1,total_length-last_arg_length):
+            smaller_option.append(last_arg_length)
+            options.append(smaller_option)
+
+    return options
+
+
 def generate_all_expressions(setup, max_length, max_integer, universe, boolean=True):
     if max_length is 1:
         return generate_all_primitive_expressions(setup,max_integer,universe)
 
     (smaller_expressions, expressions_by_meaning) = generate_all_expressions(setup, max_length-1, max_integer, universe, False)
 
-    arg_length_options = [(a, max_length - 1 - a) for a in range(1, max_length - 1)]
+    arg_length_options = {amount: calculate_arg_length_options(amount,max_length-1) for amount in range(2,4)}
 
     arg_options_by_types = {}
 
@@ -101,10 +115,12 @@ def generate_all_expressions(setup, max_length, max_integer, universe, boolean=T
 
         else:
             arg_options = []
-            for arg_lengths in arg_length_options:
-                for arg0 in smaller_expressions[arg_lengths[0]][inputTypes[0]]:
-                    for arg1 in smaller_expressions[arg_lengths[1]][inputTypes[1]]:
-                        arg_options.append([arg0,arg1])
+            for arg_lengths in arg_length_options[len(inputTypes)]:
+                arg_lists = []
+                for (arg_length,inputType) in zip(arg_lengths,inputTypes):
+                    arg_lists.append(smaller_expressions[arg_length][inputType])
+                arg_options.extend(itertools.product(*arg_lists))
+
             arg_options_by_types[inputTypes] = arg_options
 
     expressions = smaller_expressions

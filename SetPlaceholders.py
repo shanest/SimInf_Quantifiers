@@ -30,16 +30,13 @@ def apply(func, X, Y):
     return placeholder_by_representation[frozenset(func(representation[X],representation[Y]))]
 
 
-@lru_cache(maxsize=None)
 def minus(X, Y):
     return apply(lambda x, y: x - y, X, Y)
 
 
-@lru_cache(maxsize=None)
 def intersection(X, Y):
     return apply(lambda x, y: x & y, X, Y)
 
 
-@lru_cache(maxsize=None)
 def union(X, Y):
     return apply(lambda x, y: x | y, X, Y)
