@@ -73,7 +73,7 @@ def generate_simple_primitive_expressions_with_sets(max_integer):
     return expressions
 
 
-def generate_all_primitive_expressions(setup, max_integer, universe):
+def generate_all_primitive_expressions(setup, max_integer, universe, processes):
     expressions = setup.generate_primitives(max_integer)
 
     expressions_by_meaning = {
@@ -83,7 +83,7 @@ def generate_all_primitive_expressions(setup, max_integer, universe):
         SetPlaceholder: {}
     }
 
-    return clean_expressions({1:expressions}, expressions_by_meaning, 1, universe)
+    return clean_expressions({1:expressions}, expressions_by_meaning, 1, universe, processes)
 
 
 def calculate_arg_length_options(arg_amount, total_length):
@@ -99,11 +99,11 @@ def calculate_arg_length_options(arg_amount, total_length):
     return options
 
 
-def generate_all_expressions(setup, max_length, max_integer, universe, boolean=True):
+def generate_all_expressions(setup, max_length, max_integer, universe, processes, boolean=True):
     if max_length is 1:
-        return generate_all_primitive_expressions(setup,max_integer,universe)
+        return generate_all_primitive_expressions(setup,max_integer,universe,processes)
 
-    (smaller_expressions, expressions_by_meaning) = generate_all_expressions(setup, max_length-1, max_integer, universe, False)
+    (smaller_expressions, expressions_by_meaning) = generate_all_expressions(setup, max_length-1, max_integer, universe, processes, False)
 
     arg_length_options = {amount: calculate_arg_length_options(amount,max_length-1) for amount in range(2,4)}
 
@@ -134,7 +134,7 @@ def generate_all_expressions(setup, max_length, max_integer, universe, boolean=T
             expressions[max_length][operator.outputType].append(Expression(name, operator.func, *args))
 
     print('Finished step {0}, cleaning'.format(max_length))
-    return clean_expressions(expressions, expressions_by_meaning, max_length, universe)
+    return clean_expressions(expressions, expressions_by_meaning, max_length, universe, processes)
 
 
 class MeaningCalculator(object):
@@ -145,11 +145,11 @@ class MeaningCalculator(object):
         return tuple(expression.evaluate(model) for model in self.universe)
 
 
-def clean_expressions(expressions, expressions_by_meaning, length, universe):
+def clean_expressions(expressions, expressions_by_meaning, length, universe, processes):
 
     for type in [bool, int, float, SetPlaceholder]:
         print('cleaning {0} {1}s'.format(len(expressions[length][type]),str(type)))
-        p = ProcessPool(nodes=4)
+        p = ProcessPool(nodes=processes)
         new_meanings = p.map(MeaningCalculator(universe), expressions[length][type])
 
         new_expressions = copy(expressions[length][type])

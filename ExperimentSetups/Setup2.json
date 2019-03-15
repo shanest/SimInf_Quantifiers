@@ -1,0 +1,10 @@
+{
+  "name": "Setup2",
+  "lexical_quantifiers_filename": "EnglishQuantifiers_Setup2.json",
+  "model_generator": "Generator.generate_simplified_models",
+  "primitive_generator": "Generator.generate_simple_primitive_expressions_with_sets",
+  "primitive_parser": "Parser.parse_simple_primitive_with_sets",
+  "expression_complexity_measurer": "Measurer.measure_expression_complexity",
+  "quantifier_complexity_measurer": "Measurer.measure_complexity",
+  "operators": [">f", ">", ">=", "=", "/", "and", "or", "not", "subset", "intersection", "union", "card", "diff", "empty"]
+}

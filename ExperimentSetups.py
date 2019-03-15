@@ -1,4 +1,5 @@
-from collections import namedtuple
+import json
+from pydoc import locate
 
 import Generator
 import Measurer
@@ -21,6 +22,22 @@ class ExperimentSetup(object):
         self.possible_input_types = []
         for (name, operator) in self.operators.items():
             self.possible_input_types.append(operator.inputTypes)
+
+
+def parse(filename):
+    with open(filename) as file:
+        props = json.load(file)
+
+    return ExperimentSetup(
+        props['name'],
+        props['lexical_quantifiers_filename'],
+        locate(props['model_generator']),
+        locate(props['primitive_generator']),
+        locate(props['primitive_parser']),
+        locate(props['expression_complexity_measurer']),
+        locate(props['quantifier_complexity_measurer']),
+        props['operators']
+    )
 
 
 setup_1 = ExperimentSetup(
