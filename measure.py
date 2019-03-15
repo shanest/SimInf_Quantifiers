@@ -70,7 +70,7 @@ with open('{0}/lexicalized_quantifiers_cost/{1}_size={2}.txt'.format(args.dest_d
     for (name,value) in cost.items():
         f.write("{0}: {1}\n".format(name, value))
 
-os.makedirs('{0}/lexicalized_quantifier_complexity'.format(args.dest_dir), exist_ok=True)
+os.makedirs('{0}/lexicalized_quantifiers_complexity'.format(args.dest_dir), exist_ok=True)
 with open('{0}/lexicalized_quantifiers_complexity/{1}_size={2}.txt'.format(args.dest_dir,setup.name,model_size), 'w') as f:
     for (name,value) in complexity.items():
         f.write("{0}: {1}\n".format(name, value))
