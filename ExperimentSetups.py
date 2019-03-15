@@ -1,4 +1,5 @@
 import json
+from os import path
 from pydoc import locate
 
 import Generator
@@ -30,7 +31,7 @@ def parse(filename):
 
     return ExperimentSetup(
         props['name'],
-        props['lexical_quantifiers_filename'],
+        path.join(path.dirname(filename),props['lexical_quantifiers_filename']),
         locate(props['model_generator']),
         locate(props['primitive_generator']),
         locate(props['primitive_parser']),
