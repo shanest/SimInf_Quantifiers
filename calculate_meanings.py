@@ -1,17 +1,27 @@
+import argparse
 import os
-import pickle
+import dill
+
+import ExperimentSetups
 import Parser
-from ExperimentSetups import setup_1, setup_2
+from Generator import MeaningCalculator
 
-setup = setup_2
-model_size = 20
+parser = argparse.ArgumentParser(description="Calculate the meanings of the lexicalized quantifiers")
+parser.add_argument('setup', help='Path to the setup json file.')
+parser.add_argument('model_size', type=int)
+parser.add_argument('--dest_dir', default='results')
 
-universe = setup.generate_models(model_size)
+args = parser.parse_args()
+setup = ExperimentSetups.parse(args.setup)
+
+universe = setup.generate_models(args.model_size)
 
 quantifiers = Parser.load_from_file(setup.lexical_quantifiers_filename, setup)
 
-meanings = {name: tuple([quantifier.evaluate(model) for model in universe]) for (name,quantifier) in quantifiers.items()}
+calculate_meaning = MeaningCalculator(universe)
 
-os.makedirs('results/lexicalized_meanings', exist_ok=True)
-with open('results/lexicalized_meanings/{0}_size={1}.pickle'.format(setup.name,model_size), 'wb') as file:
-    pickle.dump(meanings, file)
+meanings = {name: calculate_meaning(quantifier) for (name,quantifier) in quantifiers.items()}
+
+os.makedirs('{0}/lexicalized_meanings'.format(args.dest_dir), exist_ok=True)
+with open('{0}/lexicalized_meanings/{1}_size={2}.dill'.format(args.dest_dir,setup.name,args.model_size), 'wb') as file:
+    dill.dump(meanings, file)

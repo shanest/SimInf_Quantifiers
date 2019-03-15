@@ -1,7 +1,7 @@
 import argparse
 import json
 import os
-import pickle
+import dill
 
 import ExperimentSetups
 import Generator
@@ -46,8 +46,12 @@ with open('{0}/GeneratedQuantifiers.json'.format(folderName), 'w') as file:
     gq_dict = {"{0}".format(i): quantifier.to_name_structure() for (i, quantifier) in enumerate(generated_quantifiers)}
     json.dump({'quantifiers': gq_dict}, file, indent=2)
 
-with open('{0}/generated_meanings.pickle'.format(folderName), 'wb') as file:
-    pickle.dump(generated_meanings, file)
+with open('{0}/generated_meanings.dill'.format(folderName), 'wb') as file:
+    dill.dump(generated_meanings, file)
+
+with open('{0}/generated_quantifiers.dill'.format(folderName), 'wb') as file:
+    dill.dump(generated_quantifiers, file)
+
 
 with open('{0}/generated_quantifiers.txt'.format(folderName), 'w') as f:
     for quantifier in generated_quantifiers:
