@@ -1,13 +1,10 @@
 import argparse
-import json
 import os
-import sys
 
 import dill
 
 import ExperimentSetups
 import Generator
-import debug
 
 # Parameters
 parser = argparse.ArgumentParser(description="Generate Quantifiers")
