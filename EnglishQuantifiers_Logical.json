@@ -1,0 +1,36 @@
+{
+  "quantifiers": {
+    "all": {
+      "presupposition": null,
+      "expression": ["subset","A","B"]
+    },
+    "most": {
+      "presupposition": null,
+      "expression": [">",["card",["intersection","A","B"]],["card",["diff","A","B"]]]
+    },
+    "a": {
+      "presupposition": null,
+      "expression": [">",["card",["intersection","A","B"]],0]
+    },
+    "many": {
+      "presupposition": null,
+      "expression": [">f",["/",["card",["intersection","A","B"]],["card","A"]],0.25]
+    },
+    "no": {
+      "presupposition": null,
+      "expression": ["=",["card",["intersection","A","B"]],0]
+    },
+    "both": {
+      "presupposition": ["=",["card","A"],2],
+      "expression": ["subset","A","B"]
+    },
+    "neither": {
+      "presupposition": ["=",["card","A"],2],
+      "expression": ["=",["card",["intersection","A","B"]],0]
+    },
+    "the": {
+      "presupposition": ["=",["card","A"],1],
+      "expression": ["subset","A","B"]
+    }
+  }
+}

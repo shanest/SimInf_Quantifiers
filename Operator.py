@@ -38,6 +38,16 @@ operators = {
         (int,int),
         float
     ),
+    "-": Operator(
+        lambda model, x, y: x - y,
+        (int,int),
+        int
+    ),
+    "+": Operator(
+        lambda model, x, y: x + y,
+        (int, int),
+        int
+    ),
     "diff": Operator(
         lambda model, x, y: SetPlaceholders.minus(x,y),
         (SetPlaceholder,SetPlaceholder),
@@ -75,7 +85,17 @@ operators = {
     ),
     "empty": Operator(
         lambda model, x: get_cardinality(model, x) is 0,
-        (SetPlaceholder),
+        SetPlaceholder,
+        bool
+    ),
+    "nonempty": Operator(
+        lambda model, x: get_cardinality(model, x) > 0,
+        SetPlaceholder,
+        bool
+    ),
+    "proportion": Operator(
+        lambda model, X, Y, q: get_cardinality(model, X) / get_cardinality(model, Y) > q,
+        (SetPlaceholder,SetPlaceholder,float),
         bool
     )
 }
