@@ -2,6 +2,7 @@ import argparse
 import os
 
 import dill
+from pathos.pools import ProcessPool
 
 import ExperimentSetups
 import Generator
@@ -28,16 +29,15 @@ folderName = "{0}/{1}_length={2}_size={3}".format(args.dest_dir,setup.name,max_q
 os.makedirs("{0}".format(folderName), exist_ok=True)
 
 if not args.skipexpressions:
+    processpool = ProcessPool(nodes=processes)
+    expression_generator = Generator.ExpressionGenerator(setup, model_size, universe, processpool)
     (generated_expressions_dict, expressions_by_meaning) = \
-        Generator.generate_all_expressions(
-            setup,
-            max_quantifier_length,
-            model_size,
-            universe,
-            processes
-        )
+        expression_generator.generate_all_expressions(max_quantifier_length)
     with open('{0}/generated_expressions.dill'.format(folderName), 'wb') as file:
         dill.dump(expressions_by_meaning, file)
+
+    processpool.close()
+    processpool.join()
 else:
     with open('{0}/generated_expressions.dill'.format(folderName), 'rb') as file:
         expressions_by_meaning = dill.load(file)

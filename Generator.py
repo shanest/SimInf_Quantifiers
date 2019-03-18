@@ -73,19 +73,6 @@ def generate_simple_primitive_expressions_with_sets(max_integer):
     return expressions
 
 
-def generate_all_primitive_expressions(setup, max_integer, universe, processes):
-    expressions = setup.generate_primitives(max_integer)
-
-    expressions_by_meaning = {
-        bool: {},
-        int: {},
-        float: {},
-        SetPlaceholder: {}
-    }
-
-    return clean_expressions({1:expressions}, expressions_by_meaning, 1, universe, processes)
-
-
 def calculate_arg_length_options(arg_amount, total_length):
     if arg_amount == 1:
         return [[total_length]]
@@ -99,44 +86,6 @@ def calculate_arg_length_options(arg_amount, total_length):
     return options
 
 
-def generate_all_expressions(setup, max_length, max_integer, universe, processes, boolean=True):
-    if max_length is 1:
-        return generate_all_primitive_expressions(setup,max_integer,universe,processes)
-
-    (smaller_expressions, expressions_by_meaning) = generate_all_expressions(setup, max_length-1, max_integer, universe, processes, False)
-
-    arg_length_options = {amount: calculate_arg_length_options(amount,max_length-1) for amount in range(2,4)}
-
-    arg_options_by_types = {}
-
-    for inputTypes in setup.possible_input_types:
-        if isinstance(inputTypes, type):
-            arg_options_by_types[inputTypes] = [[arg] for arg in smaller_expressions[max_length-1][inputTypes]]
-
-        else:
-            arg_options = []
-            for arg_lengths in arg_length_options[len(inputTypes)]:
-                arg_lists = []
-                for (arg_length,inputType) in zip(arg_lengths,inputTypes):
-                    arg_lists.append(smaller_expressions[arg_length][inputType])
-                arg_options.extend(itertools.product(*arg_lists))
-
-            arg_options_by_types[inputTypes] = arg_options
-
-    expressions = smaller_expressions
-    expressions[max_length] = {}
-
-    for returnType in [bool, int, float, SetPlaceholder]:
-        expressions[max_length][returnType] = []
-
-    for (name, operator) in setup.operators.items():
-        for args in arg_options_by_types[operator.inputTypes]:
-            expressions[max_length][operator.outputType].append(Expression(name, operator.func, *args))
-
-    print('Finished step {0}, cleaning'.format(max_length))
-    return clean_expressions(expressions, expressions_by_meaning, max_length, universe, processes)
-
-
 class MeaningCalculator(object):
     def __init__(self, universe):
         self.universe = universe
@@ -145,33 +94,88 @@ class MeaningCalculator(object):
         return tuple(expression.evaluate(model) for model in self.universe)
 
 
-def clean_expressions(expressions, expressions_by_meaning, length, universe, processes):
+class ExpressionGenerator(object):
 
-    for type in [bool, int, float, SetPlaceholder]:
-        print('cleaning {0} {1}s'.format(len(expressions[length][type]),str(type)))
-        p = ProcessPool(nodes=processes)
-        new_meanings = p.map(MeaningCalculator(universe), expressions[length][type])
+    def __init__(self, setup, max_integer, universe, processpool):
+        self.setup = setup
+        self.max_integer = max_integer
+        self.universe = universe
+        self.processpool = processpool
 
-        new_expressions = copy(expressions[length][type])
-        for (expression, meaning) in zip(new_expressions, new_meanings):
-            if meaning in expressions_by_meaning[type].keys():
-                other_expression = expressions_by_meaning[type][meaning]
+    def generate_all_primitive_expressions(self):
+        expressions = self.setup.generate_primitives(self.max_integer)
 
-                this_complexity = expression.length()
-                other_complexity = other_expression.length()
+        expressions_by_meaning = {
+            bool: {},
+            int: {},
+            float: {},
+            SetPlaceholder: {}
+        }
 
-                if this_complexity >= other_complexity:
-                    expressions[length][type].remove(expression)
-                    continue
-                else:
-                    expressions[other_expression.length()][type].remove(other_expression)
+        return self.clean_expressions({1: expressions}, expressions_by_meaning, 1)
 
-            expressions_by_meaning[type][meaning] = expression
+    def generate_all_expressions(self, max_length):
+        if max_length is 1:
+            return self.generate_all_primitive_expressions()
 
-        print('{0} were clean'.format(len(expressions[length][type])))
+        (smaller_expressions, expressions_by_meaning) = self.generate_all_expressions(max_length-1)
 
-    print('Finished cleaning step {0}'.format(length))
-    return expressions, expressions_by_meaning
+        arg_length_options = {amount: calculate_arg_length_options(amount,max_length-1) for amount in range(2,4)}
+
+        arg_options_by_types = {}
+
+        for inputTypes in self.setup.possible_input_types:
+            if isinstance(inputTypes, type):
+                arg_options_by_types[inputTypes] = [[arg] for arg in smaller_expressions[max_length-1][inputTypes]]
+
+            else:
+                arg_options = []
+                for arg_lengths in arg_length_options[len(inputTypes)]:
+                    arg_lists = []
+                    for (arg_length,inputType) in zip(arg_lengths,inputTypes):
+                        arg_lists.append(smaller_expressions[arg_length][inputType])
+                    arg_options.extend(itertools.product(*arg_lists))
+
+                arg_options_by_types[inputTypes] = arg_options
+
+        expressions = smaller_expressions
+        expressions[max_length] = {}
+
+        for returnType in [bool, int, float, SetPlaceholder]:
+            expressions[max_length][returnType] = []
+
+        for (name, operator) in self.setup.operators.items():
+            for args in arg_options_by_types[operator.inputTypes]:
+                expressions[max_length][operator.outputType].append(Expression(name, operator.func, *args))
+
+        print('Finished step {0}, cleaning'.format(max_length))
+        return self.clean_expressions(expressions, expressions_by_meaning, max_length)
+
+    def clean_expressions(self, expressions, expressions_by_meaning, length):
+        for type in [bool, int, float, SetPlaceholder]:
+            print('cleaning {0} {1}s'.format(len(expressions[length][type]),str(type)))
+            new_meanings = self.processpool.map(MeaningCalculator(self.universe), expressions[length][type])
+
+            new_expressions = copy(expressions[length][type])
+            for (expression, meaning) in zip(new_expressions, new_meanings):
+                if meaning in expressions_by_meaning[type].keys():
+                    other_expression = expressions_by_meaning[type][meaning]
+
+                    this_complexity = expression.length()
+                    other_complexity = other_expression.length()
+
+                    if this_complexity >= other_complexity:
+                        expressions[length][type].remove(expression)
+                        continue
+                    else:
+                        expressions[other_expression.length()][type].remove(other_expression)
+
+                expressions_by_meaning[type][meaning] = expression
+
+            print('{0} were clean'.format(len(expressions[length][type])))
+
+        print('Finished cleaning step {0}'.format(length))
+        return expressions, expressions_by_meaning
 
 
 def merge_meanings(presup_meaning, expr_meaning):
