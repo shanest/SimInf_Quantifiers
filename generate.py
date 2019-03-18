@@ -13,6 +13,7 @@ parser.add_argument('max_quantifier_length', type=int)
 parser.add_argument('model_size', type=int)
 parser.add_argument('--dest_dir', default='results')
 parser.add_argument('--processes', default=4, type=int)
+parser.add_argument('--skipexpressions', default=False, action="store_true")
 
 args = parser.parse_args()
 
@@ -23,14 +24,23 @@ model_size = args.model_size
 
 universe = setup.generate_models(model_size)
 
-(generated_expressions_dict, expressions_by_meaning) = \
-    Generator.generate_all_expressions(
-        setup,
-        max_quantifier_length,
-        model_size,
-        universe,
-        processes
-    )
+folderName = "{0}/{1}_length={2}_size={3}".format(args.dest_dir,setup.name,max_quantifier_length,model_size)
+os.makedirs("{0}".format(folderName), exist_ok=True)
+
+if not args.skipexpressions:
+    (generated_expressions_dict, expressions_by_meaning) = \
+        Generator.generate_all_expressions(
+            setup,
+            max_quantifier_length,
+            model_size,
+            universe,
+            processes
+        )
+    with open('{0}/generated_expressions.dill'.format(folderName), 'wb') as file:
+        dill.dump(expressions_by_meaning, file)
+else:
+    with open('{0}/generated_expressions.dill'.format(folderName), 'rb') as file:
+        expressions_by_meaning = dill.load(file)
 
 print("{0} expressions!".format(len(expressions_by_meaning[bool].values())))
 
@@ -42,12 +52,6 @@ generated_quantifiers = list(quantifiers_by_meaning.values())
 generated_meanings = list(quantifiers_by_meaning.keys())
 
 print("Quantifiers listed.")
-
-folderName = "{0}/{1}_length={2}_size={3}".format(args.dest_dir,setup.name,max_quantifier_length,model_size)
-
-print("Folder name formatted.")
-
-os.makedirs("{0}".format(folderName), exist_ok=True)
 
 print("Saving files....")
 
