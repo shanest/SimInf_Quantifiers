@@ -1,11 +1,13 @@
 import argparse
 import json
 import os
+import sys
+
 import dill
 
 import ExperimentSetups
 import Generator
-
+import debug
 
 # Parameters
 parser = argparse.ArgumentParser(description="Generate Quantifiers")
@@ -33,25 +35,34 @@ universe = setup.generate_models(model_size)
         processes
     )
 
+print("{0} expressions!".format(len(expressions_by_meaning[bool].values())))
+
 quantifiers_by_meaning = Generator.add_presuppositions(setup, expressions_by_meaning[bool])
+
+print("Quantifiers generated.")
 
 generated_quantifiers = list(quantifiers_by_meaning.values())
 generated_meanings = list(quantifiers_by_meaning.keys())
 
+print("Quantifiers listed.")
+
 folderName = "{0}/{1}_length={2}_size={3}".format(args.dest_dir,setup.name,max_quantifier_length,model_size)
+
+print("Folder name formatted.")
 
 os.makedirs("{0}".format(folderName), exist_ok=True)
 
-with open('{0}/GeneratedQuantifiers.json'.format(folderName), 'w') as file:
-    gq_dict = {"{0}".format(i): quantifier.to_name_structure() for (i, quantifier) in enumerate(generated_quantifiers)}
-    json.dump({'quantifiers': gq_dict}, file, indent=2)
+print("Saving files....")
 
 with open('{0}/generated_meanings.dill'.format(folderName), 'wb') as file:
     dill.dump(generated_meanings, file)
 
+print("File 1 saved")
+
 with open('{0}/generated_quantifiers.dill'.format(folderName), 'wb') as file:
     dill.dump(generated_quantifiers, file)
 
+print("File 2 saved")
 
 with open('{0}/generated_quantifiers.txt'.format(folderName), 'w') as f:
     for quantifier in generated_quantifiers:
