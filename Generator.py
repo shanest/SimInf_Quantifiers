@@ -1,7 +1,6 @@
 import itertools
 from copy import deepcopy, copy
 
-from ExperimentSetups import ExperimentSetup
 from GeneralizedQuantifierModel import *
 from itertools import chain, combinations
 from Expression import *
@@ -55,7 +54,7 @@ def generate_simple_primitive_expressions(max_integer):
 def generate_simple_primitive_expressions_with_sets(max_integer):
     expressions = {int: [], float: [], bool: [], SetPlaceholder: []}
 
-    for i in range(0, max_integer+1, 5):
+    for i in range(0, max_integer+1, 2):
         expressions[int].append(Expression(i, Primitives.create_value_func(i), is_constant=True))
 
     for set_name in ['A', 'B']:
