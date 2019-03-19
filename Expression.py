@@ -27,7 +27,6 @@ class Expression:
         self.internal_length = total_length
         return total_length
 
-    @lru_cache(maxsize=None)
     def evaluate(self, model):
         if self.is_constant:
             return self.constant_value

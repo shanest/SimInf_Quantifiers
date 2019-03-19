@@ -184,10 +184,8 @@ class PresuppositionMerger(object):
         self.processpool = processpool
 
     def add_presuppositions(self, expressions_by_meaning):
-        expressions = list(expressions_by_meaning.values())
-        exp_meanings = list(expressions_by_meaning.keys())
-
-        quantifiers = [Quantifier(e, p) for (e, p) in itertools.product(expressions, expressions)]
+        expressions = expressions_by_meaning.values()
+        exp_meanings = expressions_by_meaning.keys()
 
         meanings = self.processpool.map(merge_meanings, *zip(*itertools.product(exp_meanings,exp_meanings)))
 
@@ -198,6 +196,7 @@ class PresuppositionMerger(object):
         print('Filtering {0} qs down to {1}'.format(len(meanings), len(unique_meanings)))
 
         quantifier_list_by_meaning = {meaning: [] for meaning in unique_meanings}
+        quantifiers = [Quantifier(e, p) for (e, p) in itertools.product(expressions, expressions)]
 
         for (quantifier, meaning) in zip(quantifiers, meanings):
             if meaning is not None:
