@@ -1,11 +1,7 @@
 import json
 from os import path
 from pydoc import locate
-
-import Generator
-import Measurer
 import Operator
-import Parser
 
 
 class ExperimentSetup(object):
@@ -39,26 +35,3 @@ def parse(filename):
         locate(props['quantifier_complexity_measurer']),
         props['operators']
     )
-
-
-setup_1 = ExperimentSetup(
-    'Setup1',
-    'EnglishQuantifiers_Setup1.json',
-    Generator.generate_simplified_models,
-    Generator.generate_simple_primitive_expressions,
-    Parser.parse_simple_primitive,
-    Measurer.measure_expression_complexity,
-    Measurer.measure_complexity,
-    [">f", ">", ">=", "=", "/", "and", "or", "not"]
-)
-
-setup_2 = ExperimentSetup(
-    'Setup2',
-    'EnglishQuantifiers_Setup2.json',
-    Generator.generate_simplified_models,
-    Generator.generate_simple_primitive_expressions_with_sets,
-    Parser.parse_simple_primitive_with_sets,
-    Measurer.measure_expression_complexity,
-    Measurer.measure_complexity,
-    [">f", ">", ">=", "=", "/", "and", "or", "not", "subset", "intersection", "union", "card", "diff", "empty"]
-)

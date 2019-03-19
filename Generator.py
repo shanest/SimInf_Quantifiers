@@ -1,8 +1,7 @@
 import itertools
 from copy import deepcopy, copy
 
-from pathos.pools import ProcessPool
-
+from ExperimentSetups import ExperimentSetup
 from GeneralizedQuantifierModel import *
 from itertools import chain, combinations
 from Expression import *
@@ -178,8 +177,65 @@ class ExpressionGenerator(object):
         return expressions, expressions_by_meaning
 
 
-def merge_meanings(presup_meaning, expr_meaning):
-    return tuple([e if p else None for (p, e) in zip(presup_meaning, expr_meaning)])
+class PresuppositionMerger(object):
+
+    def __init__(self, setup, processpool):
+        self.setup = setup
+        self.processpool = processpool
+
+    def add_presuppositions(self, expressions_by_meaning):
+        expressions = list(expressions_by_meaning.values())
+        exp_meanings = list(expressions_by_meaning.keys())
+
+        quantifiers = [Quantifier(e, p) for (e, p) in itertools.product(expressions, expressions)]
+
+        meanings = self.processpool.map(merge_meanings, *zip(*itertools.product(exp_meanings,exp_meanings)))
+
+        unique_meanings = set(meanings)
+        unique_meanings.remove(None)
+        unique_meanings = list(unique_meanings)
+
+        print('Filtering {0} qs down to {1}'.format(len(meanings), len(unique_meanings)))
+
+        quantifier_list_by_meaning = {meaning: [] for meaning in unique_meanings}
+
+        for (quantifier, meaning) in zip(quantifiers, meanings):
+            if meaning is not None:
+                quantifier_list_by_meaning[meaning].append(quantifier)
+
+        print(self.setup.measure_quantifier_complexity)
+        find_least_complex = ComplexitySorter(self.setup.measure_quantifier_complexity)
+        best_quantifiers = self.processpool.map(find_least_complex, quantifier_list_by_meaning.values())
+
+        quantifiers_by_meaning = {meaning: quantifier for (meaning, quantifier)
+                                  in zip(quantifier_list_by_meaning.keys(), best_quantifiers)}
+        for (exp,meaning) in zip(expressions,exp_meanings):
+            quantifiers_by_meaning[meaning] = Quantifier(exp)
+
+        return quantifiers_by_meaning
+
+
+class ComplexitySorter(object):
+
+    def __init__(self, measure_function):
+        self.measure_function = measure_function
+
+    def __call__(self, quantifiers):
+        if len(quantifiers) is 1:
+            return quantifiers[0]
+
+        sorted_quantifiers = sorted(quantifiers, key=lambda q: self.measure_function(q))
+        return sorted_quantifiers[0]
+
+
+def merge_meanings(expr_meaning, presup_meaning):
+    if False not in presup_meaning:
+        return None
+
+    result = tuple(e if p else None for (p, e) in zip(presup_meaning, expr_meaning))
+    if False not in result or True not in result:
+        return None
+    return result
 
 
 def add_presuppositions(setup, expressions_by_meaning):
@@ -191,7 +247,7 @@ def add_presuppositions(setup, expressions_by_meaning):
             meaning = merge_meanings(p_meaning, e_meaning)
             if True not in meaning or False not in meaning:
                 continue
-            quantifier = Quantifier(expression,presupposition)
+            quantifier = Quantifier(expression, presupposition)
 
             if meaning in quantifiers_by_meaning.keys():
                 other_quantifier = quantifiers_by_meaning[meaning]

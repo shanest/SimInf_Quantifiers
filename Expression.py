@@ -7,6 +7,7 @@ class Expression:
         self.name = name
         self.func = func
         self.arg_expressions = arg_expressions
+        self.internal_length = None
 
         if is_constant is None:
             args_constant = [arg.is_constant for arg in arg_expressions]
@@ -18,9 +19,12 @@ class Expression:
             self.constant_value = func(None,*[arg_expression.evaluate(None) for arg_expression in arg_expressions])
 
     def length(self):
+        if self.internal_length is not None:
+            return self.internal_length
         total_length = 1
         for arg_expression in self.arg_expressions:
             total_length += arg_expression.length()
+        self.internal_length = total_length
         return total_length
 
     @lru_cache(maxsize=None)
