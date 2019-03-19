@@ -94,7 +94,7 @@ operators = {
         bool
     ),
     "proportion": Operator(
-        lambda model, X, Y, q: get_cardinality(model, X) / get_cardinality(model, Y) > q,
+        lambda model, X, Y, q: get_cardinality(model, X) / get_cardinality(model, Y) > q if get_cardinality(model, Y) > 0 else 0,
         (SetPlaceholder,SetPlaceholder,float),
         bool
     )

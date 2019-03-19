@@ -39,7 +39,11 @@ class Expression:
         if len(self.arg_expressions) is 1:
             return "{0}({1})".format(self.name, self.arg_expressions[0])
         if len(self.arg_expressions) is 2:
-            return "{0}({1},{2})".format(self.name, self.arg_expressions[0], self.arg_expressions[1])
+            return "{0}({1},{2})".format(self.name, *self.arg_expressions)
+        if len(self.arg_expressions) is 3:
+            return "{0}({1},{2},{3})".format(self.name, *self.arg_expressions)
+        if len(self.arg_expressions) is 4:
+            return "{0}({1},{2},{3},{4})".format(self.name, *self.arg_expressions)
 
     def to_name_structure(self):
         if len(self.arg_expressions) is 0:

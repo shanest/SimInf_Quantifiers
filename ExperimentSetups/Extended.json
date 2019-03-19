@@ -1,5 +1,5 @@
 {
-  "name": "Setup2",
+  "name": "Extended",
   "lexical_quantifiers_filename": "../EnglishQuantifiers_Extended.json",
   "model_generator": "Generator.generate_simplified_models",
   "primitive_generator": "Generator.generate_simple_primitive_expressions_with_sets",
