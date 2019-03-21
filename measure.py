@@ -58,7 +58,8 @@ measure_communicative_cost = Measurer.measure_relative_communicative_cost if mea
 
 cost = {}
 complexity = {}
-for ((name, quantifier), meaning) in zip(quantifiers.items(), meanings.values()):
+for (name, quantifier) in quantifiers.items():
+    meaning = meanings[name]
     cost[name] = measure_communicative_cost(meaning)
     complexity[name] = setup.measure_quantifier_complexity(quantifier)
     plt.annotate(name, (cost[name], complexity[name]))
