@@ -10,6 +10,8 @@ import Parser
 import matplotlib.pyplot as plt
 from pathos.pools import ProcessPool
 
+from Quantifier import Quantifier
+
 parser = argparse.ArgumentParser(description="Generate Quantifiers")
 parser.add_argument('setup', help='Path to the setup json file.')
 parser.add_argument('max_quantifier_length', type=int)
@@ -17,6 +19,7 @@ parser.add_argument('model_size', type=int)
 parser.add_argument('--dest_dir', default='results')
 parser.add_argument('--processes', default=4, type=int)
 parser.add_argument('--relative', default=False, action="store_true")
+parser.add_argument('--no_presupp', dest="use_presuppositions", default=True, action="store_false")
 
 
 args = parser.parse_args()
@@ -30,11 +33,18 @@ quantifiers = Parser.load_from_file(setup.lexical_quantifiers_filename, setup)
 
 folderName = "{0}/{1}_length={2}_size={3}".format(args.dest_dir,setup.name,max_quantifier_length,model_size)
 
-with open('{0}/generated_quantifiers.dill'.format(folderName),'rb') as file:
-    generated_quantifiers = dill.load(file)
+if args.use_presuppositions:
+    with open('{0}/generated_quantifiers.dill'.format(folderName),'rb') as file:
+        generated_quantifiers = dill.load(file)
 
-with open('{0}/generated_meanings.dill'.format(folderName),'rb') as file:
-    generated_meanings = dill.load(file)
+    with open('{0}/generated_meanings.dill'.format(folderName),'rb') as file:
+        generated_meanings = dill.load(file)
+else:
+    with open('{0}/generated_expressions.dill').format(folderName),'rb' as file:
+        expressions_by_meaning = dill.load(file)
+
+    generated_quantifiers = [Quantifier(e) for e in expressions_by_meaning.values()]
+    generated_meanings = list(expressions_by_meaning.keys())
 
 with open('{0}/lexicalized_meanings/{1}_size={2}.dill'.format(args.dest_dir,setup.name,model_size),'rb') as file:
     meanings = dill.load(file)
