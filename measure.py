@@ -40,7 +40,7 @@ if args.use_presuppositions:
     with open('{0}/generated_meanings.dill'.format(folderName),'rb') as file:
         generated_meanings = dill.load(file)
 else:
-    with open('{0}/generated_expressions.dill').format(folderName),'rb' as file:
+    with open('{0}/generated_expressions.dill'.format(folderName),'rb') as file:
         expressions_by_meaning = dill.load(file)
 
     generated_quantifiers = [Quantifier(e) for e in expressions_by_meaning.values()]
