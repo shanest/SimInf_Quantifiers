@@ -178,15 +178,47 @@ class ExpressionGenerator(object):
 
 class PresuppositionMerger(object):
 
-    def __init__(self, setup, processpool):
+    def __init__(self, setup, processpool, chunk_size):
         self.setup = setup
         self.processpool = processpool
+        self.chunk_size = chunk_size
 
     def add_presuppositions(self, expressions_by_meaning):
         expressions = expressions_by_meaning.values()
         exp_meanings = expressions_by_meaning.keys()
 
-        meanings = self.processpool.map(merge_meanings, *zip(*itertools.product(exp_meanings,exp_meanings)))
+        presuppositions = iter(expressions)
+        presup_meanings = iter(exp_meanings)
+
+        quantifiers = []
+        meanings = []
+
+        while True:
+            presup_chunk = list(itertools.islice(presuppositions, self.chunk_size))
+            presup_meaning_chunk = itertools.islice(presup_meanings, self.chunk_size)
+
+            if len(presup_chunk) == 0:
+                break
+
+            new_quantifiers, new_meanings = self.merge_presupposition_chunk(
+                expressions,
+                exp_meanings,
+                presup_chunk,
+                presup_meaning_chunk
+            )
+
+            quantifiers.extend(new_quantifiers)
+            meanings.extend(new_meanings)
+
+        quantifiers_by_meaning = {meaning: quantifier for (meaning, quantifier)
+                                  in zip(meanings, quantifiers)}
+        for (exp,meaning) in zip(expressions,exp_meanings):
+            quantifiers_by_meaning[meaning] = Quantifier(exp)
+
+        return quantifiers_by_meaning
+
+    def merge_presupposition_chunk(self, expressions, exp_meanings, presuppositions, presup_meanings):
+        meanings = self.processpool.map(merge_meanings, *zip(*itertools.product(exp_meanings, presup_meanings)))
 
         unique_meanings = set(meanings)
         unique_meanings.remove(None)
@@ -195,22 +227,16 @@ class PresuppositionMerger(object):
         print('Filtering {0} qs down to {1}'.format(len(meanings), len(unique_meanings)))
 
         quantifier_list_by_meaning = {meaning: [] for meaning in unique_meanings}
-        quantifiers = [Quantifier(e, p) for (e, p) in itertools.product(expressions, expressions)]
+        quantifiers = [Quantifier(e, p) for (e, p) in itertools.product(expressions, presuppositions)]
 
         for (quantifier, meaning) in zip(quantifiers, meanings):
             if meaning is not None:
                 quantifier_list_by_meaning[meaning].append(quantifier)
 
-        print(self.setup.measure_quantifier_complexity)
         find_least_complex = ComplexitySorter(self.setup.measure_quantifier_complexity)
         best_quantifiers = self.processpool.map(find_least_complex, quantifier_list_by_meaning.values())
 
-        quantifiers_by_meaning = {meaning: quantifier for (meaning, quantifier)
-                                  in zip(quantifier_list_by_meaning.keys(), best_quantifiers)}
-        for (exp,meaning) in zip(expressions,exp_meanings):
-            quantifiers_by_meaning[meaning] = Quantifier(exp)
-
-        return quantifiers_by_meaning
+        return best_quantifiers, quantifier_list_by_meaning.keys()
 
 
 class ComplexitySorter(object):

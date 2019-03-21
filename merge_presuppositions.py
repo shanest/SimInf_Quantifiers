@@ -10,12 +10,14 @@ parser = argparse.ArgumentParser(description="Generate Quantifiers")
 parser.add_argument('setup', help='Path to the setup json file.')
 parser.add_argument('max_quantifier_length', type=int)
 parser.add_argument('model_size', type=int)
+parser.add_argument('--chunk_size', default=4, type=int)
 parser.add_argument('--dest_dir', default='results')
 parser.add_argument('--processes', default=4, type=int)
 
 args = parser.parse_args()
 
 processes = args.processes
+chunk_size = args.chunk_size
 setup = ExperimentSetups.parse(args.setup)
 max_quantifier_length = args.max_quantifier_length
 model_size = args.model_size
@@ -26,7 +28,7 @@ with open('{0}/generated_expressions.dill'.format(folderName), 'rb') as file:
     expressions_by_meaning = dill.load(file)
 
 processpool = ProcessPool(nodes=processes)
-merger = Generator.PresuppositionMerger(setup, processpool)
+merger = Generator.PresuppositionMerger(setup, processpool, chunk_size)
 
 quantifiers_by_meaning = merger.add_presuppositions(expressions_by_meaning)
 
