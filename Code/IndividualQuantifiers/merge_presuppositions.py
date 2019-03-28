@@ -3,8 +3,7 @@ import argparse
 import dill
 from pathos.pools import ProcessPool
 
-import ExperimentSetups
-import Generator
+import Generator, ExperimentSetups
 
 parser = argparse.ArgumentParser(description="Generate Quantifiers")
 parser.add_argument('setup', help='Path to the setup json file.')

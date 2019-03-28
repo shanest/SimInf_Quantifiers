@@ -1,5 +1,5 @@
 import itertools
-from copy import deepcopy, copy
+from copy import copy
 
 from GeneralizedQuantifierModel import *
 from itertools import chain, combinations

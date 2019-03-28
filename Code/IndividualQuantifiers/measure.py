@@ -4,9 +4,7 @@ import os
 import dill
 import numpy as np
 
-import ExperimentSetups
-import Measurer
-import Parser
+import Parser, Measurer, ExperimentSetups
 import matplotlib.pyplot as plt
 from pathos.pools import ProcessPool
 

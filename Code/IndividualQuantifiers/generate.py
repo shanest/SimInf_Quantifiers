@@ -4,8 +4,7 @@ import os
 import dill
 from pathos.pools import ProcessPool
 
-import ExperimentSetups
-import Generator
+import Generator, ExperimentSetups
 
 # Parameters
 parser = argparse.ArgumentParser(description="Generate Quantifiers")

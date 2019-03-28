@@ -2,14 +2,13 @@ import argparse
 import os
 import dill
 
-import ExperimentSetups
-import Parser
+import Parser, ExperimentSetups
 from Generator import MeaningCalculator
 
 parser = argparse.ArgumentParser(description="Calculate the meanings of the lexicalized quantifiers")
 parser.add_argument('setup', help='Path to the setup json file.')
 parser.add_argument('model_size', type=int)
-parser.add_argument('--dest_dir', default='results')
+parser.add_argument('--dest_dir', default='../../results')
 
 args = parser.parse_args()
 setup = ExperimentSetups.parse(args.setup)

@@ -1,7 +1,6 @@
 import pickle
 import numpy as np
-import Generator
-import Parser
+import Generator, Parser
 from GeneralizedQuantifierModel import SimplifiedQuantifierModel
 
 quantifiers = list(Parser.load_from_file('../results/GeneratedQuantifiers.json').values())

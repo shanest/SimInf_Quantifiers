@@ -1,10 +1,9 @@
-import Expression
-import GeneralizedQuantifierModel
+import GeneralizedQuantifierModel, Expression
 
 
 class Quantifier:
 
-    def __init__(self, expression: Expression, presupposition: Expression=None):
+    def __init__(self, expression: Expression, presupposition: Expression =None):
         self.expression = expression
         self.presupposition = presupposition
         self.has_presupposition = presupposition is not None

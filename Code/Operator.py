@@ -1,5 +1,4 @@
 from collections import namedtuple
-from functools import lru_cache
 
 from SetPlaceholders import SetPlaceholder
 import SetPlaceholders
@@ -49,7 +48,7 @@ operators = {
         int
     ),
     "diff": Operator(
-        lambda model, x, y: SetPlaceholders.minus(x,y),
+        lambda model, x, y: SetPlaceholders.minus(x, y),
         (SetPlaceholder,SetPlaceholder),
         SetPlaceholder
     ),
@@ -59,12 +58,12 @@ operators = {
         int
     ),
     "intersection": Operator(
-        lambda model, x, y: SetPlaceholders.intersection(x,y),
+        lambda model, x, y: SetPlaceholders.intersection(x, y),
         (SetPlaceholder, SetPlaceholder),
         SetPlaceholder
     ),
     "union": Operator(
-        lambda model, x, y: SetPlaceholders.union(x,y),
+        lambda model, x, y: SetPlaceholders.union(x, y),
         (SetPlaceholder, SetPlaceholder),
         SetPlaceholder
     ),
