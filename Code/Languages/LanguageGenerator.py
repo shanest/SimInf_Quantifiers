@@ -12,14 +12,16 @@ def generate_all(expressions, max_words):
     return list(itertools.chain(*iterators))
 
 
-def generate_sampled(expressions, max_words, fraction):
+def generate_sampled(expressions, max_words, sample_size):
     total_word_amount = len(expressions)
     languages = []
 
     for word_amount in range(1, max_words+1):
-        num_samples = math.ceil(num_combinations(total_word_amount, word_amount) * fraction)
-        if num_samples > 0:
-            languages.extend(random_combinations(expressions, word_amount, num_samples))
+        if sample_size > num_combinations(total_word_amount, word_amount):
+            languages.extend(itertools.combinations(expressions, word_amount))
+        else:
+            print('Sampling for word amount {0}'.format(word_amount))
+            languages.extend(random_combinations(expressions, word_amount, sample_size))
 
     return languages
 

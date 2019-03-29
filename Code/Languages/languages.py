@@ -10,13 +10,14 @@ import Generator
 from Languages.ComplexityMeasurer import WordCountComplexityMeasurer
 from Languages.InformativenessMeasurer import InformativenessMeasurer
 from Languages.LanguageGenerator import EvaluatedExpression, generate_all, generate_sampled
+from fileutil import FileUtil
 
 parser = argparse.ArgumentParser(description="Generate Quantifiers")
 parser.add_argument('setup', help='Path to the setup json file.')
 parser.add_argument('max_quantifier_length', type=int)
 parser.add_argument('model_size', type=int)
 parser.add_argument('max_words', type=int)
-parser.add_argument('--sample', type=float, default=None)
+parser.add_argument('--sample', type=int, default=None)
 parser.add_argument('--dest_dir', default='results')
 parser.add_argument('--processes', default=4, type=int)
 
@@ -24,16 +25,9 @@ args = parser.parse_args()
 
 setup = ExperimentSetups.parse(args.setup)
 
-folderName = "{0}/{1}_length={2}_size={3}".format(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size)
+file_util = FileUtil(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size)
 
-
-def dump(data, filename):
-    with open('{0}/{1}'.format(folderName,filename), 'wb') as file:
-        dill.dump(data, file)
-
-
-with open('{0}/generated_expressions.dill'.format(folderName), 'rb') as file:
-    expressions_by_meaning = dill.load(file)
+expressions_by_meaning = file_util.load_dill('generated_expressions.dill')
 
 expressions = [EvaluatedExpression(expression, meaning) for (meaning, expression) in expressions_by_meaning.items()]
 
@@ -59,11 +53,11 @@ pool = ProcessPool(nodes=args.processes)
 informativeness = pool.map(InformativenessMeasurer(universe_size), languages)
 complexity = pool.map(WordCountComplexityMeasurer(args.max_words), languages)
 
-dump(languages, 'languages.dill')
-dump(informativeness, 'informativeness.dill')
-dump(complexity, 'complexity.dill')
+file_util.dump_dill(languages, 'languages.dill')
+file_util.dump_dill(informativeness, 'informativeness.dill')
+file_util.dump_dill(complexity, 'complexity.dill')
 
-with open('{0}/languages.txt'.format(folderName), 'w') as f:
+with open('{0}/languages.txt'.format(file_util.folderName), 'w') as f:
     for language in languages:
         f.write("{0}\n".format([str(e.expression) for e in language]))
 
