@@ -23,9 +23,12 @@ setup = ExperimentSetups.parse(args.setup)
 
 file_util = FileUtil(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size)
 
-expressions_by_meaning = file_util.load_dill('generated_expressions.dill')
+unevaluated_expressions = file_util.load_dill('expressions.dill')
+meanings = file_util.load_dill('meanings.dill')
+complexities = file_util.load_dill('expression_complexities.dill')
 
-expressions = [EvaluatedExpression(expression, meaning) for (meaning, expression) in expressions_by_meaning.items()]
+expressions = [EvaluatedExpression(expression, meaning, complexity)
+               for (expression, meaning, complexity) in zip(unevaluated_expressions, meanings, complexities)]
 
 if args.sample is None:
     languages = generate_all(expressions, args.max_words)
