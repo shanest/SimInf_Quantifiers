@@ -2,13 +2,11 @@ from collections import namedtuple
 
 import pygmo
 
-from analysisutil import file_util
+from analysisutil import file_util, args
 
 languages = file_util.load_dill('languages.dill')
-informativeness = file_util.load_dill('informativeness.dill')
-complexity = file_util.load_dill('complexity.dill')
-
-MeasuredLanguage = namedtuple('MeasuredLanguage', 'language informativeness complexity')
+informativeness = file_util.load_dill('informativeness_{0}.dill'.format(args.informativeness_strategy))
+complexity = file_util.load_dill('complexity_{0}.dill'.format(args.complexity_strategy))
 
 measurements = [(inf, 1-comp) for inf, comp in zip(informativeness, complexity)]
 

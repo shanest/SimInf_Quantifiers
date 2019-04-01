@@ -1,14 +1,10 @@
 import argparse
-import itertools
-from collections import namedtuple
 from pathos.pools import ProcessPool
-
-import dill
 
 import ExperimentSetups
 import Generator
 from Languages.ComplexityMeasurer import WordCountComplexityMeasurer
-from Languages.InformativenessMeasurer import SimMaxInformativenessMeasurer
+from Languages.InformativenessMeasurer import SimMaxInformativenessMeasurer, InformativenessMeasurer
 from Languages.LanguageGenerator import EvaluatedExpression, generate_all, generate_sampled
 from fileutil import FileUtil
 
@@ -36,19 +32,7 @@ if args.sample is None:
 else:
     languages = generate_sampled(expressions, args.max_words, args.sample)
 
-universe = Generator.generate_simplified_models(args.model_size)
-
-pool = ProcessPool(nodes=args.processes)
-
-informativeness = pool.map(SimMaxInformativenessMeasurer(universe, args.model_size), languages)
-complexity = pool.map(WordCountComplexityMeasurer(args.max_words), languages)
-
 file_util.dump_dill(languages, 'languages.dill')
-file_util.dump_dill(informativeness, 'informativeness.dill')
-file_util.dump_dill(complexity, 'complexity.dill')
-
 with open('{0}/languages.txt'.format(file_util.folderName), 'w') as f:
     for language in languages:
         f.write("{0}\n".format([str(e.expression) for e in language]))
-
-

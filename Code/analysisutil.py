@@ -7,6 +7,8 @@ parser = argparse.ArgumentParser(description="Analyze")
 parser.add_argument('setup', help='Path to the setup json file.')
 parser.add_argument('max_quantifier_length', type=int)
 parser.add_argument('model_size', type=int)
+parser.add_argument('complexity_strategy')
+parser.add_argument('informativeness_strategy')
 parser.add_argument('--dest_dir', default='results')
 parser.add_argument('--processes', default=4, type=int)
 

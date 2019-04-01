@@ -37,7 +37,7 @@ def distance(s1: SimplifiedQuantifierModel, s2: SimplifiedQuantifierModel):
 
 class SimMaxInformativenessMeasurer(object):
 
-    def __init__(self, universe, model_size):
+    def __init__(self, universe):
         self.universe = universe
         self.score = {}
         for (i1,s1),(i2,s2) in itertools.combinations(enumerate(universe),2):
