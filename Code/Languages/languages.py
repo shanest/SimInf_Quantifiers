@@ -8,7 +8,7 @@ import dill
 import ExperimentSetups
 import Generator
 from Languages.ComplexityMeasurer import WordCountComplexityMeasurer
-from Languages.InformativenessMeasurer import InformativenessMeasurer
+from Languages.InformativenessMeasurer import SimMaxInformativenessMeasurer
 from Languages.LanguageGenerator import EvaluatedExpression, generate_all, generate_sampled
 from fileutil import FileUtil
 
@@ -36,21 +36,11 @@ if args.sample is None:
 else:
     languages = generate_sampled(expressions, args.max_words, args.sample)
 
-universe_size = len(Generator.generate_simplified_models(args.model_size))
-
-# Possibly use this if memory becomes a problem.
-# EvaluatedLanguage = namedtuple('EvaluatedLanguage', 'language complexity informativeness')
-#
-#
-# def evaluate(language):
-#     informativeness = measure_informativeness(language, universe_size)
-#     complexity = measure_complexity_by_word_count(language, args.max_words)
-#     return EvaluatedLanguage(language, complexity, informativeness)
-
+universe = Generator.generate_simplified_models(args.model_size)
 
 pool = ProcessPool(nodes=args.processes)
 
-informativeness = pool.map(InformativenessMeasurer(universe_size), languages)
+informativeness = pool.map(SimMaxInformativenessMeasurer(universe, args.model_size), languages)
 complexity = pool.map(WordCountComplexityMeasurer(args.max_words), languages)
 
 file_util.dump_dill(languages, 'languages.dill')
