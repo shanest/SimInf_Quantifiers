@@ -13,3 +13,8 @@ class FileUtil(object):
     def load_dill(self,filename):
         with open('{0}/{1}'.format(self.folderName, filename), 'rb') as file:
             return dill.load(file)
+
+    def save_stringlist(self, data, filename):
+        with open('{0}/{1}'.format(self.folderName, filename), 'w') as file:
+            for item in data:
+                file.write('{0}\n'.format(item))

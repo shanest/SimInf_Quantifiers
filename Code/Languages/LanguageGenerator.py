@@ -4,7 +4,11 @@ import random
 from collections import namedtuple
 
 
-EvaluatedExpression = namedtuple('EvaluatedExpression', 'expression meaning')
+class EvaluatedExpression(namedtuple('EvaluatedExpression', 'expression meaning')):
+    __slots__ = ()
+
+    def __str__(self):
+        return str(self.expression)
 
 
 def generate_all(expressions, max_words):

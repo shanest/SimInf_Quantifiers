@@ -1,5 +1,4 @@
 import itertools
-import math
 
 from GeneralizedQuantifierModel import SimplifiedQuantifierModel
 
