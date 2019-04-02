@@ -3,7 +3,7 @@ from pathos.pools import ProcessPool
 
 import ExperimentSetups
 import Generator
-from Languages.ComplexityMeasurer import WordCountComplexityMeasurer
+from Languages.ComplexityMeasurer import WordCountComplexityMeasurer, SumComplexityMeasurer
 from Languages.InformativenessMeasurer import SimMaxInformativenessMeasurer, InformativenessMeasurer
 from fileutil import FileUtil
 
@@ -39,6 +39,8 @@ else:
 
 if args.comp_strat == 'wordcount':
     complexity_measurer = WordCountComplexityMeasurer(args.max_words)
+elif args.comp_strat == 'wordcomplexity':
+    complexity_measurer = SumComplexityMeasurer(args.max_words, args.max_quantifier_length/20)
 else:
     raise ValueError('{0} is not a valid complexity strategy.'.format(args.inf_strat))
 

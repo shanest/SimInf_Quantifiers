@@ -1,10 +1,5 @@
 import argparse
-from pathos.pools import ProcessPool
-
 import ExperimentSetups
-import Generator
-from Languages.ComplexityMeasurer import WordCountComplexityMeasurer
-from Languages.InformativenessMeasurer import SimMaxInformativenessMeasurer, InformativenessMeasurer
 from Languages.LanguageGenerator import EvaluatedExpression, generate_all, generate_sampled
 from fileutil import FileUtil
 

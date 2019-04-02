@@ -35,4 +35,4 @@ file_util.dump_dill(complexities, 'expression_complexities.dill')
 processpool.close()
 processpool.join()
 
-print('Expression generation finished.')
+print('Complexity Measuring finished.')

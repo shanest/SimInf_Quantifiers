@@ -1,7 +1,6 @@
 import argparse
 import os
 
-import dill
 from pathos.pools import ProcessPool
 
 import Generator, ExperimentSetups
