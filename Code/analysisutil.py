@@ -1,18 +1,23 @@
 import argparse
 
 import ExperimentSetups
+import fileutil
 from fileutil import FileUtil
 
 parser = argparse.ArgumentParser(description="Analyze")
 parser.add_argument('setup', help='Path to the setup json file.')
 parser.add_argument('max_quantifier_length', type=int)
 parser.add_argument('model_size', type=int)
-parser.add_argument('complexity_strategy')
-parser.add_argument('informativeness_strategy')
 parser.add_argument('--dest_dir', default='results')
 parser.add_argument('--processes', default=4, type=int)
+parser.add_argument('--run', default=0, type=int)
 
-args = parser.parse_args()
-setup = ExperimentSetups.parse(args.setup)
+add_argument = parser.add_argument
 
-file_util = FileUtil(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size)
+
+def init():
+    args = parser.parse_args()
+    setup = ExperimentSetups.parse(args.setup)
+    file_util = FileUtil(fileutil.run_dir(
+        args.dest_dir, setup.name, args.max_quantifier_length, args.model_size, args.run))
+    return args, setup, file_util

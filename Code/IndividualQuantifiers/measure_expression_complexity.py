@@ -4,6 +4,7 @@ from pathos.pools import ProcessPool
 import ExperimentSetups
 
 # Parameters
+import fileutil
 from fileutil import FileUtil
 
 parser = argparse.ArgumentParser(description="Generate Quantifiers")
@@ -20,15 +21,15 @@ setup = ExperimentSetups.parse(args.setup)
 max_quantifier_length = args.max_quantifier_length
 model_size = args.model_size
 
-file_util = FileUtil(args.dest_dir, setup.name, max_quantifier_length, model_size)
+file_util = FileUtil(fileutil.base_dir(args.dest_dir, setup.name, max_quantifier_length, model_size))
 
-folderName = "{0}/{1}_length={2}_size={3}".format(args.dest_dir,setup.name,max_quantifier_length,model_size)
+folderName = "{0}/{1}_length={2}_size={3}".format(args.dest_dir, setup.name, max_quantifier_length, model_size)
 
 processpool = ProcessPool(nodes=processes)
 
 expressions = file_util.load_dill('expressions.dill')
 
-complexities = processpool.map(setup.measure_expression_complexity, expressions)
+complexities = processpool.map(lambda ex: setup.measure_expression_complexity(ex, max_quantifier_length), expressions)
 
 file_util.dump_dill(complexities, 'expression_complexities.dill')
 

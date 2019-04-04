@@ -1,5 +1,6 @@
 import argparse
 import ExperimentSetups
+import fileutil
 from Languages.LanguageGenerator import EvaluatedExpression, generate_all, generate_sampled
 from fileutil import FileUtil
 
@@ -11,12 +12,13 @@ parser.add_argument('max_words', type=int)
 parser.add_argument('--sample', type=int, default=None)
 parser.add_argument('--dest_dir', default='results')
 parser.add_argument('--processes', default=4, type=int)
+parser.add_argument('--run', default=0, type=int)
 
 args = parser.parse_args()
 
 setup = ExperimentSetups.parse(args.setup)
 
-file_util = FileUtil(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size)
+file_util = FileUtil(fileutil.run_dir(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size, args.run))
 
 unevaluated_expressions = file_util.load_dill('expressions.dill')
 meanings = file_util.load_dill('meanings.dill')

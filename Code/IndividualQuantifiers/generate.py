@@ -6,6 +6,7 @@ from pathos.pools import ProcessPool
 import Generator, ExperimentSetups
 
 # Parameters
+import fileutil
 from fileutil import FileUtil
 
 parser = argparse.ArgumentParser(description="Generate Quantifiers")
@@ -22,7 +23,7 @@ setup = ExperimentSetups.parse(args.setup)
 max_quantifier_length = args.max_quantifier_length
 model_size = args.model_size
 
-file_util = FileUtil(args.dest_dir, setup.name, max_quantifier_length, model_size)
+file_util = FileUtil(fileutil.base_dir(args.dest_dir, setup.name, max_quantifier_length, model_size))
 
 
 universe = setup.generate_models(model_size)

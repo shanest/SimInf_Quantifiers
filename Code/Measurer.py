@@ -1,12 +1,10 @@
-import collections
-
 def measure_complexity(quantifier):
-    return measure_expression_complexity(quantifier.expression) + measure_expression_complexity(quantifier.presupposition)
+    return (measure_expression_complexity(quantifier.expression, 10) +
+            measure_expression_complexity(quantifier.presupposition, 10)) / 2
 
 
-def measure_expression_complexity(expression):
-    return expression.length()/20 if expression is not None else 0
-
+def measure_expression_complexity(expression, max_length):
+    return expression.length()/max_length if expression is not None else 0
 
 # def measure_relative_communicative_cost(quantifier, universe):
 #     true_count = 0
