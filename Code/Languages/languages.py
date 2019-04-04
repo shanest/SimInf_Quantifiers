@@ -18,11 +18,12 @@ args = parser.parse_args()
 
 setup = ExperimentSetups.parse(args.setup)
 
-file_util = FileUtil(fileutil.run_dir(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size, args.run))
+file_util_out = FileUtil(fileutil.run_dir(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size, args.run))
+file_util_in = FileUtil(fileutil.base_dir(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size))
 
-unevaluated_expressions = file_util.load_dill('expressions.dill')
-meanings = file_util.load_dill('meanings.dill')
-complexities = file_util.load_dill('expression_complexities.dill')
+unevaluated_expressions = file_util_in.load_dill('expressions.dill')
+meanings = file_util_in.load_dill('meanings.dill')
+complexities = file_util_in.load_dill('expression_complexities.dill')
 
 expressions = [EvaluatedExpression(expression, meaning, complexity)
                for (expression, meaning, complexity) in zip(unevaluated_expressions, meanings, complexities)]
@@ -32,7 +33,5 @@ if args.sample is None:
 else:
     languages = generate_sampled(expressions, args.max_words, args.sample)
 
-file_util.dump_dill(languages, 'languages.dill')
-with open('{0}/languages.txt'.format(file_util.folderName), 'w') as f:
-    for language in languages:
-        f.write("{0}\n".format([str(e.expression) for e in language]))
+file_util_out.dump_dill(languages, 'languages.dill')
+file_util_out.save_stringlist([map(str, lang) for lang in languages], 'languages.txt')
