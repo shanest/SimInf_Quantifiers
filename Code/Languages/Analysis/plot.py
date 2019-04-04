@@ -18,6 +18,7 @@ dominating_indices = pygmo.non_dominated_front_2d(measurements)
 dom_informativeness = [informativeness[i] for i in dominating_indices]
 dom_complexity = [complexity[i] for i in dominating_indices]
 
+fig = plt.figure()
 plt.plot(informativeness,complexity,'o')
 plt.plot(dom_informativeness,dom_complexity,'o',color='red')
 #plt.axis([0,1,0,1])
@@ -26,3 +27,8 @@ plt.xlabel('informativeness')
 plt.ylabel('complexity')
 
 plt.show()
+
+file_util.save_figure(fig, '{0}_{1}_plot'.format(
+    args.complexity_strategy,
+    args.informativeness_strategy
+))

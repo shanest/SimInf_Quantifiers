@@ -22,6 +22,13 @@ class FileUtil(object):
             for item in data:
                 file.write('{0}\n'.format(item))
 
+    def full_path(self, filename):
+        return '{0}/{1}'.format(self.folderName, filename)
+
+    def save_figure(self, fig, filename):
+        os.makedirs(self.full_path('figures'), exist_ok=True)
+        fig.savefig(self.full_path('figures/{0}'.format(filename)), bbox_inches='tight')
+
 
 def base_dir(dest_dir, setup_name, max_quant_length, model_size):
     return "{0}/{1}_length={2}_size={3}".format(dest_dir, setup_name, max_quant_length,model_size)
