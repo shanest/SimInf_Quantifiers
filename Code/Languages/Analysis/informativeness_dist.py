@@ -1,0 +1,11 @@
+import analysisutil
+import matplotlib.pyplot as plt
+
+analysisutil.add_argument('informativeness_strategy')
+
+(args, setup, file_util) = analysisutil.init()
+
+informativeness = file_util.load_dill('informativeness_{0}.dill'.format(args.informativeness_strategy))
+
+plt.hist(informativeness)
+plt.show()
