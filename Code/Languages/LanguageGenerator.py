@@ -11,16 +11,18 @@ class EvaluatedExpression(namedtuple('EvaluatedExpression', 'expression meaning 
         return str(self.expression)
 
 
-def generate_all(expressions, max_words):
-    iterators = (itertools.combinations(expressions, word_amount) for word_amount in range(1, max_words+1))
+def generate_all(expressions, max_words, fixed_wordcount=False):
+    word_amounts = [max_words] if fixed_wordcount else range(1, max_words+1)
+    iterators = (itertools.combinations(expressions, word_amount) for word_amount in word_amounts)
     return list(itertools.chain(*iterators))
 
 
-def generate_sampled(expressions, max_words, sample_size):
+def generate_sampled(expressions, max_words, sample_size, fixed_wordcount=False):
+    word_amounts = [max_words] if fixed_wordcount else range(1, max_words+1)
     total_word_amount = len(expressions)
     languages = []
 
-    for word_amount in range(1, max_words+1):
+    for word_amount in word_amounts:
         if sample_size > num_combinations(total_word_amount, word_amount):
             languages.extend(itertools.combinations(expressions, word_amount))
         else:

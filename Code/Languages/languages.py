@@ -12,6 +12,7 @@ parser.add_argument('max_words', type=int)
 parser.add_argument('--sample', type=int, default=None)
 parser.add_argument('--dest_dir', default='results')
 parser.add_argument('--processes', default=4, type=int)
+parser.add_argument('--fixedwordcount', default=False, action="store_true")
 parser.add_argument('--run', default=0, type=int)
 
 args = parser.parse_args()
@@ -29,9 +30,9 @@ expressions = [EvaluatedExpression(expression, meaning, complexity)
                for (expression, meaning, complexity) in zip(unevaluated_expressions, meanings, complexities)]
 
 if args.sample is None:
-    languages = generate_all(expressions, args.max_words)
+    languages = generate_all(expressions, args.max_words, args.fixedwordcount)
 else:
-    languages = generate_sampled(expressions, args.max_words, args.sample)
+    languages = generate_sampled(expressions, args.max_words, args.sample, args.fixedwordcount)
 
 file_util_out.dump_dill(languages, 'languages.dill')
-file_util_out.save_stringlist([map(str, lang) for lang in languages], 'languages.txt')
+file_util_out.save_stringlist([list(map(str, lang)) for lang in languages], 'languages.txt')

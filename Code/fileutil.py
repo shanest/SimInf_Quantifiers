@@ -1,9 +1,12 @@
+import os
+
 import dill
 
 
 class FileUtil(object):
 
     def __init__(self, folderName):
+        os.makedirs(folderName, exist_ok=True)
         self.folderName = folderName
 
     def dump_dill(self, data, filename):
