@@ -1,6 +1,6 @@
-def measure_complexity(quantifier):
-    return (measure_expression_complexity(quantifier.expression, 10) +
-            measure_expression_complexity(quantifier.presupposition, 10)) / 2
+def measure_complexity(quantifier, max_length):
+    return (measure_expression_complexity(quantifier.expression, max_length) +
+            measure_expression_complexity(quantifier.presupposition, max_length)) / 2
 
 
 def measure_expression_complexity(expression, max_length):
