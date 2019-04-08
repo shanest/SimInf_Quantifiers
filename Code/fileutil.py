@@ -34,5 +34,5 @@ def base_dir(dest_dir, setup_name, max_quant_length, model_size):
     return "{0}/{1}_length={2}_size={3}".format(dest_dir, setup_name, max_quant_length,model_size)
 
 
-def run_dir(dest_dir, setup_name, max_quant_length, model_size, run_num):
-    return "{0}/run_{1}".format(base_dir(dest_dir, setup_name, max_quant_length, model_size), run_num)
+def run_dir(dest_dir, setup_name, max_quant_length, model_size, run_name):
+    return "{0}/{1}".format(base_dir(dest_dir, setup_name, max_quant_length, model_size), run_name)
