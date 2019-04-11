@@ -6,9 +6,10 @@ import Operator
 
 class ExperimentSetup(object):
 
-    def __init__(self, name, lexical_quantifiers_filename, model_generator, primitive_generator, primitive_parser, expression_complexity_measurer, quantifier_complexity_measurer, operators):
+    def __init__(self, name, lexical_quantifiers_filename, natural_languages_dirname, model_generator, primitive_generator, primitive_parser, expression_complexity_measurer, quantifier_complexity_measurer, operators):
         self.name = name
         self.lexical_quantifiers_filename = lexical_quantifiers_filename
+        self.natural_languages_dirname = natural_languages_dirname
         self.generate_models = model_generator
         self.generate_primitives = primitive_generator
         self.operators = {name: Operator.operators[name] for name in operators}
@@ -27,7 +28,8 @@ def parse(filename):
 
     return ExperimentSetup(
         props['name'],
-        path.join(path.dirname(filename),props['lexical_quantifiers_filename']),
+        path.join(path.dirname(filename), props['lexical_quantifiers_filename']),
+        path.join(path.dirname(filename), 'Languages/{0}'.format(props['name'])),
         locate(props['model_generator']),
         locate(props['primitive_generator']),
         locate(props['primitive_parser']),
