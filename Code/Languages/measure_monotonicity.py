@@ -1,5 +1,5 @@
-from statistics import mean
-
+from numpy import mean
+from numpy import float64
 from pathos.multiprocessing import ProcessPool
 
 import analysisutil
@@ -10,7 +10,7 @@ languages = file_util.load_dill('languages.dill')
 
 
 def measure_monotonicity(language):
-    return mean([word.monotonicity for word in language])
+    return mean([float64(word.monotonicity) for word in language])
 
 
 with ProcessPool(nodes=args.processes) as process_pool:
