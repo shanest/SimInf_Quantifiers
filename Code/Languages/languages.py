@@ -26,13 +26,14 @@ file_util_in = FileUtil(fileutil.base_dir(args.dest_dir, setup.name, args.max_qu
 unevaluated_expressions = file_util_in.load_dill('expressions.dill')
 meanings = file_util_in.load_dill('meanings.dill')
 complexities = file_util_in.load_dill('expression_complexities.dill')
+monotonicities = file_util_in.load_dill('monotonicities_max.dill')
 
 if args.indices is not None:
     indices = file_util_in.load_dill('{0}_expression_indices.dill'.format(args.indices))
 else:
     indices = range(len(unevaluated_expressions))
 
-expressions = [EvaluatedExpression(unevaluated_expressions[i], meanings[i], complexities[i])
+expressions = [EvaluatedExpression(unevaluated_expressions[i], meanings[i], complexities[i], monotonicities[i])
                for i in indices]
 
 if args.sample is None:
