@@ -12,8 +12,8 @@ def get_monotone_indices(monotone_set, direction, threshold):
     return set(i for (i, monotonicity) in enumerate(monotonicities) if monotonicity > threshold)
 
 
-indices_upward = get_monotone_indices('b', False, threshold)
-indices_downward = get_monotone_indices('b', True, threshold)
+indices_upward = get_monotone_indices('b', 'up', threshold)
+indices_downward = get_monotone_indices('b', 'down', threshold)
 
 indices = indices_upward.union(indices_downward)
 
