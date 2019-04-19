@@ -1,29 +1,20 @@
-from pathos.multiprocessing import ProcessPool
-
-import Generator
 import analysisutil
-from Monotonicity import MonotonicityMeasurer
 
 analysisutil.add_argument('threshold', type=float)
 
 (args, setup, file_util) = analysisutil.init(use_base_dir=True)
 
-expressions = file_util.load_dill('expressions.dill')
-raw_meanings = file_util.load_dill('meanings.dill')
-
-universe = Generator.generate_simplified_models(args.model_size)
+threshold = round(args.threshold, 2)
 
 
-def get_monotone_quantifiers(monotone_set, threshold, process_pool):
-    measurer = MonotonicityMeasurer(universe, args.model_size, monotone_set)
-    monotonicities = process_pool.map(measurer, raw_meanings)
+def get_monotone_indices(monotone_set, direction, threshold):
+    monotonicities = file_util.load_dill('monotonicities_{0}_{1}'.format(monotone_set, direction))
     return set(i for (i, monotonicity) in enumerate(monotonicities) if monotonicity > threshold)
 
 
-with ProcessPool(nodes=args.processes) as process_pool:
-    a = get_monotone_quantifiers('A', args.threshold, process_pool)
-    b = get_monotone_quantifiers('B', args.threshold, process_pool)
+indices_upward = get_monotone_indices('b', False, threshold)
+indices_downward = get_monotone_indices('b', True, threshold)
 
-indices = a.union(b)
+indices = indices_upward.union(indices_downward)
 
-file_util.dump_dill(indices, 'monotone_{0}_expression_indices.dill'.format(args.threshold))
+file_util.dump_dill(indices, 'monotone_{0}_expression_indices.dill'.format(threshold))

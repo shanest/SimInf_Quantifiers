@@ -9,8 +9,8 @@ def flip_model(model):
 
 class ConservativityMeasurer(object):
 
-    def __init__(self, universe, model_size, monotone_set):
-        self.universe = universe if monotone_set == 'A' else list(map(flip_model, universe))
+    def __init__(self, universe, model_size, conservative_set):
+        self.universe = universe if conservative_set == 'A' else list(map(flip_model, universe))
         self.model_size = model_size
 
     def structure_meaning(self, raw_meaning):
