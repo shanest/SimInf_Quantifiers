@@ -6,7 +6,6 @@ analysisutil.add_argument('threshold', type=float)
 
 threshold = round(args.threshold, 2)
 
-
 def get_monotone_indices(monotone_set, direction, threshold):
     monotonicities = file_util.load_dill('monotonicities_{0}_{1}.dill'.format(monotone_set, direction))
     return set(i for (i, monotonicity) in enumerate(monotonicities) if monotonicity > threshold)

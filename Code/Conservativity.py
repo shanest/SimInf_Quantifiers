@@ -58,5 +58,5 @@ class ConservativityMeasurer(object):
         entropy_prior = -sum(probabilities[truth] * math.log(probabilities[truth]) for truth in [True,False] if
                              probabilities[truth] > 0)
 
-        return 1 - entropy_conditional / entropy_prior if entropy_prior != 0 else 0
+        return max(0, min(1, 1 - entropy_conditional / entropy_prior if entropy_prior != 0 else 0))
 

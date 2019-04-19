@@ -14,7 +14,7 @@ fig = plt.figure()
 for run_name in args.run_names:
     informativeness = file_util.load_dill('{0}/informativeness_{1}.dill'.format(run_name, args.informativeness_strategy))
     complexity = file_util.load_dill('{0}/complexity_{1}.dill'.format(run_name, args.complexity_strategy))
-    plt.plot(informativeness, complexity, 'o', label=run_name)
+    plt.scatter(informativeness, complexity, label=run_name)
 
 plt.legend()
 plt.xlabel('informativeness')
