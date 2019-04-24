@@ -98,7 +98,7 @@ operators = {
         bool
     ),
     "%": Operator(
-        lambda model, x, y: x % y,
+        lambda model, x, y: x % y if y > 0 else 0,
         (int, int),
         int
     )
