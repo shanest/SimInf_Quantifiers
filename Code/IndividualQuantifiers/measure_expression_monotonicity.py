@@ -20,9 +20,12 @@ with ProcessPool(nodes=args.processes) as process_pool:
     monotonicities_b_up = process_pool.map(measurer_b_up, meanings)
     monotonicities_a_down = process_pool.map(measurer_a_down, meanings)
     monotonicities_b_down = process_pool.map(measurer_b_down, meanings)
-    monotonicities_max = process_pool.map(max,
-                                          monotonicities_a_up, monotonicities_a_down,
-                                          monotonicities_b_up, monotonicities_b_down)
+    monotonicities_a_max = process_pool.map(max,
+                                          monotonicities_a_up, monotonicities_a_down)
+    monotonicities_b_max = process_pool.map(max,
+                                            monotonicities_b_up,monotonicities_b_down)
+    monotonicities_max = process_pool.map(lambda x, y: (x+y)/2, monotonicities_a_max,
+                                          monotonicities_b_max)
 
 file_util.dump_dill(monotonicities_a_up,'monotonicities_a_up.dill')
 file_util.dump_dill(monotonicities_a_down,'monotonicities_a_down.dill')

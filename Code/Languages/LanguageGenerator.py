@@ -4,7 +4,7 @@ import random
 from collections import namedtuple
 
 
-class EvaluatedExpression(namedtuple('EvaluatedExpression', 'expression meaning complexity monotonicity')):
+class EvaluatedExpression(namedtuple('EvaluatedExpression', 'expression meaning complexity monotonicity conservativity')):
     __slots__ = ()
 
     def __str__(self):

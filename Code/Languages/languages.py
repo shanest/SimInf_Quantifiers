@@ -1,4 +1,6 @@
 import argparse
+import itertools
+
 import ExperimentSetups
 import fileutil
 from Languages.LanguageGenerator import EvaluatedExpression, generate_all, generate_sampled
@@ -14,7 +16,7 @@ parser.add_argument('--dest_dir', default='results')
 parser.add_argument('--processes', default=4, type=int)
 parser.add_argument('--fixedwordcount', default=False, action="store_true")
 parser.add_argument('--name', default='run_0')
-parser.add_argument('--indices', default=None)
+parser.add_argument('-i','--indices', nargs='*')
 
 args = parser.parse_args()
 
@@ -27,13 +29,17 @@ unevaluated_expressions = file_util_in.load_dill('expressions.dill')
 meanings = file_util_in.load_dill('meanings.dill')
 complexities = file_util_in.load_dill('expression_complexities.dill')
 monotonicities = file_util_in.load_dill('monotonicities_max.dill')
+conservativities = file_util_in.load_dill('conservativities_max.dill')
 
-if args.indices is not None:
-    indices = file_util_in.load_dill('{0}_expression_indices.dill'.format(args.indices))
+if len(args.indices) > 0:
+    index_sets = []
+    for indices_name in args.indices:
+        index_sets.append(file_util_in.load_dill('{0}_expression_indices.dill'.format(indices_name)))
+    indices = set.intersection(*index_sets)
 else:
     indices = range(len(unevaluated_expressions))
 
-expressions = [EvaluatedExpression(unevaluated_expressions[i], meanings[i], complexities[i], monotonicities[i])
+expressions = [EvaluatedExpression(unevaluated_expressions[i], meanings[i], complexities[i], monotonicities[i], conservativities[i])
                for i in indices]
 
 if args.sample is None:

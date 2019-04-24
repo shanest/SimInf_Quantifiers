@@ -1,4 +1,4 @@
-import pygmo
+from urllib.parse import quote_plus
 
 import analysisutil
 import matplotlib.pyplot as plt
@@ -22,7 +22,8 @@ plt.ylabel('complexity')
 
 plt.show()
 
-file_util.save_figure(fig, '{0}_{1}_multirun_plot'.format(
+file_util.save_figure(fig, '{0}_{1}_{2}_multirun_plot.png'.format(
     args.complexity_strategy,
-    args.informativeness_strategy
+    args.informativeness_strategy,
+    '-'.join(args.run_names)
 ))

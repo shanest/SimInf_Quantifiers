@@ -70,3 +70,15 @@ def test_not_entirely_upward_monotone_a():
     monotonicity = measurer(meaning)
 
     assert not math.isclose(monotonicity, 1)
+
+def test_not_entirely_upward_monotone_a_equals():
+    expression = Parser.parse_expression(['or',['=',['card',['intersection','A','B']],3],['=',9,['card',['intersection','A','B']]]],Setup)
+    universe = Generator.generate_simplified_models(10)
+
+    meaning = Generator.MeaningCalculator(universe)(expression)
+
+    measurer = MonotonicityMeasurer(universe, 10, 'A')
+
+    monotonicity = measurer(meaning)
+    print(monotonicity)
+    assert not math.isclose(monotonicity, 1)
