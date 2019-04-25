@@ -31,7 +31,7 @@ complexities = file_util_in.load_dill('expression_complexities.dill')
 monotonicities = file_util_in.load_dill('monotonicities_max.dill')
 conservativities = file_util_in.load_dill('conservativities_max.dill')
 
-if len(args.indices) > 0:
+if args.indices is not None:
     index_sets = []
     for indices_name in args.indices:
         index_sets.append(file_util_in.load_dill('{0}_expression_indices.dill'.format(indices_name)))
