@@ -1,5 +1,4 @@
 import argparse
-import itertools
 
 import ExperimentSetups
 import fileutil

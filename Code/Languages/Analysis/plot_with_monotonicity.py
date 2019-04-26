@@ -11,7 +11,7 @@ complexity = file_util.load_dill('complexity_{0}.dill'.format(args.complexity_st
 monotonicity = file_util.load_dill('monotonicity.dill')
 
 fig = plt.figure()
-plt.scatter(informativeness,complexity,c=monotonicity,s=.25)
+plt.scatter(informativeness,complexity,c=monotonicity)
 plt.colorbar()
 
 plt.xlabel('informativeness')
