@@ -15,5 +15,6 @@ indices_upward = get_monotone_indices('b', 'up', threshold)
 indices_downward = get_monotone_indices('b', 'down', threshold)
 
 indices = indices_upward.union(indices_downward)
+print(indices)
 
 file_util.dump_dill(indices, 'monotone_{0}_expression_indices.dill'.format(threshold))

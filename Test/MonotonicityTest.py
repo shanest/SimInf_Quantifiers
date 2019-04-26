@@ -1,4 +1,5 @@
 import math
+import random
 
 import Generator
 import Parser
@@ -82,3 +83,4 @@ def test_not_entirely_upward_monotone_a_equals():
     monotonicity = measurer(meaning)
     print(monotonicity)
     assert not math.isclose(monotonicity, 1)
+
