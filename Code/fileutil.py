@@ -1,4 +1,5 @@
 import os
+from copy import copy
 
 import dill
 
@@ -29,6 +30,10 @@ class FileUtil(object):
         os.makedirs(self.full_path('figures'), exist_ok=True)
         fig.savefig(self.full_path('figures/{0}'.format(filename)), bbox_inches='tight')
 
+    def get_base_file_util(self):
+        file_util_base = copy(self)
+        file_util_base.folderName = os.path.dirname(self.folderName)
+        return file_util_base
 
 def base_dir(dest_dir, setup_name, max_quant_length, model_size):
     return "{0}/{1}_length={2}_size={3}".format(dest_dir, setup_name, max_quant_length,model_size)

@@ -3,10 +3,11 @@ from numpy import float64
 from pathos.multiprocessing import ProcessPool
 
 import analysisutil
+from Languages import LanguageLoader
 
 (args, setup, file_util) = analysisutil.init()
 
-languages = file_util.load_dill('languages.dill')
+languages = LanguageLoader.load_languages(file_util)
 
 
 def measure_monotonicity(language):

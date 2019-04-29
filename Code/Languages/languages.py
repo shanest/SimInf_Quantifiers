@@ -25,10 +25,6 @@ file_util_out = FileUtil(fileutil.run_dir(args.dest_dir, setup.name, args.max_qu
 file_util_in = FileUtil(fileutil.base_dir(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size))
 
 unevaluated_expressions = file_util_in.load_dill('expressions.dill')
-meanings = file_util_in.load_dill('meanings.dill')
-complexities = file_util_in.load_dill('expression_complexities.dill')
-monotonicities = file_util_in.load_dill('monotonicities_max.dill')
-conservativities = file_util_in.load_dill('conservativities_max.dill')
 
 if args.indices is not None:
     index_sets = []
@@ -38,13 +34,10 @@ if args.indices is not None:
 else:
     indices = range(len(unevaluated_expressions))
 
-expressions = [EvaluatedExpression(unevaluated_expressions[i], meanings[i], complexities[i], monotonicities[i], conservativities[i])
-               for i in indices]
-
 if args.sample is None:
-    languages = generate_all(expressions, args.max_words, args.fixedwordcount)
+    languages = generate_all(indices, args.max_words, args.fixedwordcount)
 else:
-    languages = generate_sampled(expressions, args.max_words, args.sample, args.fixedwordcount)
+    languages = generate_sampled(indices, args.max_words, args.sample, args.fixedwordcount)
 
-file_util_out.dump_dill(languages, 'languages.dill')
+file_util_out.dump_dill(languages, 'language_indices.dill')
 file_util_out.save_stringlist([list(map(str, lang)) for lang in languages], 'languages.txt')

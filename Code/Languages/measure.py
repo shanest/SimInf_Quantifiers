@@ -4,6 +4,7 @@ from pathos.pools import ProcessPool
 import ExperimentSetups
 import Generator
 import fileutil
+from Languages import LanguageLoader
 from Languages.ComplexityMeasurer import WordCountComplexityMeasurer, SumComplexityMeasurer
 from Languages.InformativenessMeasurer import SimMaxInformativenessMeasurer, InformativenessMeasurer
 from fileutil import FileUtil
@@ -26,7 +27,7 @@ setup = ExperimentSetups.parse(args.setup)
 
 file_util = FileUtil(fileutil.run_dir(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size, args.name))
 
-languages = file_util.load_dill('languages.dill')
+languages = LanguageLoader.load_languages(file_util)
 
 universe = Generator.generate_simplified_models(args.model_size)
 
