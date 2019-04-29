@@ -22,4 +22,7 @@ class SpecialComplexityMeasurer(object):
         self.max_complexity = max_words
 
     def __call__(self, language):
-        return sum(word.special_complexity for word in language) / self.max_complexity
+        try:
+            return sum(word.special_complexity for word in language) / self.max_complexity
+        except:
+            print('{0}, {1}'.format(type(language[0].special_complexity), type(self.max_complexity)))
