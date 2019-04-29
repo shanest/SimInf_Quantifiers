@@ -3,9 +3,9 @@ import analysisutil
 from Languages import LanguageLoader
 from Languages.ComplexityMeasurer import WordCountComplexityMeasurer, SumComplexityMeasurer, SpecialComplexityMeasurer
 
-(args, setup, file_util) = analysisutil.init()
 analysisutil.add_argument('max_words')
 analysisutil.add_argument('comp_strat')
+(args, setup, file_util) = analysisutil.init()
 
 languages = LanguageLoader.load_languages(file_util)
 

@@ -4,8 +4,8 @@ import analysisutil
 from Languages import LanguageLoader
 from Languages.InformativenessMeasurer import SimMaxInformativenessMeasurer, InformativenessMeasurer
 
-(args, setup, file_util) = analysisutil.init()
 analysisutil.add_argument('inf_strat')
+(args, setup, file_util) = analysisutil.init()
 
 languages = LanguageLoader.load_languages(file_util)
 
