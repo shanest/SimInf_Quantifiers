@@ -1,3 +1,5 @@
+import numpy
+
 import numpy as np
 from pathos.multiprocessing import ProcessPool
 
@@ -29,7 +31,7 @@ def measure_expression_probability(expression):
         _type = SetPlaceholder
     elif not isinstance(expression.name, str):
         primitive = True
-        _type = type(expression.name)
+        _type = float if type(expression.name) == numpy.float64 else type(expression.name)
     else:
         primitive = False
         _type = operators[expression.name].outputType
