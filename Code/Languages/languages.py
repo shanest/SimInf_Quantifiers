@@ -29,7 +29,7 @@ unevaluated_expressions = file_util_in.load_dill('expressions.dill')
 if args.indices is not None:
     index_sets = []
     for indices_name in args.indices:
-        index_sets.append(file_util_in.load_dill('{0}_expression_indices.dill'.format(indices_name)))
+        index_sets.append(set(file_util_in.load_dill('{0}_expression_indices.dill'.format(indices_name))))
     indices = set.intersection(*index_sets)
 else:
     indices = range(len(unevaluated_expressions))
