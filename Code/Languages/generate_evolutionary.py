@@ -15,6 +15,7 @@ from Languages.InformativenessMeasurer import SimMaxInformativenessMeasurer
 analysisutil.add_argument('lang_size', type=int)
 analysisutil.add_argument('sample_size', type=int)
 analysisutil.add_argument('generations', type=int)
+analysisutil.add_argument('-m','--max_mutations', type=int, default=1)
 (args, setup, file_util) = analysisutil.init()
 
 expressions = LanguageLoader.load_all_evaluated_expressions(file_util)
@@ -62,6 +63,10 @@ def sample_mutated(languages, amount):
 
     for language in languages:
         for i in range(amount_per_language):
+            num_mutations = random.randint(1, args.max_mutations)
+            mutated_language = language
+            for j in range(num_mutations):
+                mutated_language = mutate(mutated_language)
             mutated_languages.append(mutate(language))
 
     for i in range(amount_random):
