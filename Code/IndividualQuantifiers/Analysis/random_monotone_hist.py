@@ -18,7 +18,10 @@ with ProcessPool(4) as process_pool:
     monotonicities_down = process_pool.map(measurer_down, meanings)
     monotonicities = process_pool.map(max, monotonicities_up, monotonicities_down)
 
+fig = plt.figure()
 
 plt.hist(monotonicities,bins=30,range=[0,1])
 
 plt.show()
+
+fig.savefig('results/random_monotone.png', bbox_inches='tight')
