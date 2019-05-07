@@ -59,7 +59,7 @@ def sample_mutated(languages, amount):
     amount_per_language = int(math.floor(amount / len(languages)))
     amount_random = amount % len(languages)
 
-    mutated_languages = languages
+    mutated_languages = []
 
     for language in languages:
         for i in range(amount_per_language):
@@ -72,6 +72,8 @@ def sample_mutated(languages, amount):
     for i in range(amount_random):
         language = random.choice(languages)
         mutated_languages.append(mutate(language))
+
+    mutated_languages.extend(languages)
 
     return mutated_languages
 
