@@ -1,4 +1,5 @@
 from Languages.LanguageGenerator import EvaluatedExpression
+import pandas as pd
 
 
 def load_languages(file_util):
@@ -33,3 +34,17 @@ def load_all_evaluated_expressions(file_util):
     return [EvaluatedExpression(unevaluated_expressions[i], meanings[i], complexities[i], monotonicities[i],
                                 conservativities[i], special_complexities[i], i)
             for i in range(len(unevaluated_expressions))]
+
+
+def load_pandas_table(file_util, complexity_strategy, informativeness_strategy, include_monotonicity=True):
+    complexity = file_util.load_dill('complexity_{0}.dill'.format(complexity_strategy))
+    informativeness = file_util.load_dill('informativeness_{0}.dill'.format(informativeness_strategy))
+
+    data = {'complexity': complexity,
+            'comm_cost': list(map(lambda x: 1 - x, informativeness))
+           }
+    if include_monotonicity:
+        data['monotonicity'] = file_util.load_dill('monotonicity.dill')
+
+    return pd.DataFrame(data)
+

@@ -2,6 +2,7 @@ import os
 from copy import copy
 
 import dill
+import pandas
 
 
 class FileUtil(object):
@@ -34,6 +35,16 @@ class FileUtil(object):
         file_util_base = copy(self)
         file_util_base.folderName = os.path.dirname(self.folderName)
         return file_util_base
+
+    def get_sub_file_util(self, dirname):
+        return FileUtil(self.full_path(dirname))
+
+    def save_pandas_csv(self, dataframe, filename):
+        os.makedirs(self.full_path('tables'), exist_ok=True)
+        dataframe.to_csv(self.full_path('tables/{0}'.format(filename)))
+
+    def load_pandas_csv(self, filename):
+        return pandas.read_csv(self.full_path('tables/{0}'.format(filename)))
 
 def base_dir(dest_dir, setup_name, max_quant_length, model_size):
     return "{0}/{1}_length={2}_size={3}".format(dest_dir, setup_name, max_quant_length,model_size)
