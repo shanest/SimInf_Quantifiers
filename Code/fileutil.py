@@ -46,6 +46,9 @@ class FileUtil(object):
     def load_pandas_csv(self, filename):
         return pandas.read_csv(self.full_path('tables/{0}'.format(filename)))
 
+    def exists(self, filename):
+        return os.path.exists(self.full_path(filename))
+
 def base_dir(dest_dir, setup_name, max_quant_length, model_size):
     return "{0}/{1}_length={2}_size={3}".format(dest_dir, setup_name, max_quant_length,model_size)
 

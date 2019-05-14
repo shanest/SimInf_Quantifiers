@@ -1,3 +1,5 @@
+import os
+
 from Languages.LanguageGenerator import EvaluatedExpression
 import pandas as pd
 
@@ -45,6 +47,8 @@ def load_pandas_table(file_util, complexity_strategy, informativeness_strategy, 
            }
     if include_monotonicity:
         data['monotonicity'] = file_util.load_dill('monotonicity.dill')
+    if file_util.exists('naturalness.dill'):
+        data['naturalness'] = file_util.load_dill('naturalness.dill')
 
     return pd.DataFrame(data)
 
