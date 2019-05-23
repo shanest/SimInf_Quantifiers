@@ -1,3 +1,4 @@
+import math
 from collections import namedtuple
 
 from SetPlaceholders import SetPlaceholder
@@ -14,6 +15,11 @@ operators = {
     ),
     ">f": Operator(
         lambda model, x, y: x > y,
+        (float,float),
+        bool
+    ),
+    "=f": Operator(
+        lambda model, x, y: math.isclose(x,y),
         (float,float),
         bool
     ),

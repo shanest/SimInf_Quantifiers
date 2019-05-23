@@ -61,7 +61,7 @@ def parse_primitive_options(spec, model_size):
     if isinstance(spec, str):
         if spec == "n":
             expressions = []
-            for i in range(0, model_size + 1, 2):
+            for i in range(0, model_size + 1):
                 func = Primitives.create_value_func(i)
                 expressions.append(Expression(str(i), func))
             return expressions
