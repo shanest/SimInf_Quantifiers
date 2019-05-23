@@ -49,6 +49,8 @@ def load_pandas_table(file_util, complexity_strategy, informativeness_strategy, 
         data['monotonicity'] = file_util.load_dill('monotonicity.dill')
     if file_util.exists('naturalness.dill'):
         data['naturalness'] = file_util.load_dill('naturalness.dill')
+    if file_util.exists('conservativity.dill'):
+        data['conservativity'] = file_util.load_dill('conservativity.dill')
 
     return pd.DataFrame(data)
 

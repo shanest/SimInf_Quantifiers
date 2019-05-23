@@ -31,6 +31,10 @@ class FileUtil(object):
         os.makedirs(self.full_path('figures'), exist_ok=True)
         fig.savefig(self.full_path('figures/{0}'.format(filename)), bbox_inches='tight')
 
+    def save_plotnine(self, fig, filename):
+        os.makedirs(self.full_path('figures'), exist_ok=True)
+        fig.save(self.full_path('figures/{0}'.format(filename)))
+
     def get_base_file_util(self):
         file_util_base = copy(self)
         file_util_base.folderName = os.path.dirname(self.folderName)

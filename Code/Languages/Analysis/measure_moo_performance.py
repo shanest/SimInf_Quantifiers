@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from numpy.linalg import norm
 import pygmo
+import plotnine as pn
 
 analysisutil.add_argument('table_name')
 analysisutil.add_argument('pareto')
@@ -24,6 +25,14 @@ for run_name in args.run_names:
     run_df = run_df.append(df)
 
 print(run_df.head())
+
+base_plot = (pn.ggplot(pn.aes('comm_cost','complexity')) +
+         pn.geom_point(pn.aes(color='factor(run)'), data=run_df))
+
+print(base_plot)
+
+plot = base_plot + pn.geom_point(data=pareto_data)
+print(plot)
 
 
 complexity = list(pareto_data['complexity'].values) + list(run_df['complexity'].values)
@@ -53,9 +62,13 @@ values.sort(key=lambda val: -val[1])
 values.sort(key=lambda val: val[0])
 values = [np.array(value) for value in values]
 
+pareto_values = pd.DataFrame({'comm_cost': dominating_comm_cost, 'complexity': dominating_complexity})
+plot = base_plot + pn.geom_point(data=pareto_values)
+print(plot)
+
 x = []
 y = []
-interval = .005
+interval = .001
 
 for (left, right) in zip(values[:-1], values[1:]):
     diff = right - left
@@ -75,13 +88,8 @@ for (left, right) in zip(values[:-1], values[1:]):
 estimated_pareto = pd.DataFrame({'comm_cost':x, 'complexity':y})
 
 
-# plot = (pn.ggplot(pn.aes('comm_cost','complexity')) +
-#         pn.geom_point(pn.aes(color='factor(run)'), data=run_df)+
-#         pn.geom_point(data=estimated_pareto) #+
-#         # pn.stat_smooth(method='loess', data=estimated_pareto)
-#         )
-
-# print(plot)
+plot = base_plot + pn.geom_point(data=estimated_pareto)
+print(plot)
 
 dist_calculator = MinEuclidianDistanceCalculator(np.array(list(zip(x,y))))
 
