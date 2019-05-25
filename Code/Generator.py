@@ -36,7 +36,7 @@ def generate_simplified_models(size):
 def generate_simple_primitive_expressions(max_integer):
     expressions = {int: [], float: [], bool: [], SetPlaceholder: []}
 
-    for i in range(0, max_integer+1):
+    for i in range(0, max_integer+1, 2):
         expressions[int].append(Expression(i, Primitives.create_value_func(i), is_constant=True))
 
     for set_name in ['A', 'B', 'A-B', 'A&B']:
@@ -54,7 +54,7 @@ def generate_simple_primitive_expressions(max_integer):
 def generate_simple_primitive_expressions_with_sets(max_integer):
     expressions = {int: [], float: [], bool: [], SetPlaceholder: []}
 
-    for i in range(0, max_integer+1):
+    for i in range(0, max_integer+1, 2):
         expressions[int].append(Expression(i, Primitives.create_value_func(i), is_constant=True))
 
     for set_name in ['A', 'B']:
