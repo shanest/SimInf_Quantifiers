@@ -11,14 +11,13 @@ def load_languages(file_util):
     complexities = file_util_base.load_dill('expression_complexities.dill')
     monotonicities = file_util_base.load_dill('monotonicities_max.dill')
     conservativities = file_util_base.load_dill('conservativities_max.dill')
-    special_complexities = file_util_base.load_dill('expression_special_complexities.dill')
 
     index_lists = file_util.load_dill('language_indices.dill')
 
     languages = []
     for indices in index_lists:
         languages.append([EvaluatedExpression(unevaluated_expressions[i], meanings[i], complexities[i],
-                                              monotonicities[i], conservativities[i], special_complexities[i], i)
+                                              monotonicities[i], conservativities[i], 0, i)
                           for i in indices])
 
     return languages
@@ -31,10 +30,9 @@ def load_all_evaluated_expressions(file_util):
     complexities = file_util_base.load_dill('expression_complexities.dill')
     monotonicities = file_util_base.load_dill('monotonicities_max.dill')
     conservativities = file_util_base.load_dill('conservativities_max.dill')
-    special_complexities = file_util_base.load_dill('expression_special_complexities.dill')
 
     return [EvaluatedExpression(unevaluated_expressions[i], meanings[i], complexities[i], monotonicities[i],
-                                conservativities[i], special_complexities[i], i)
+                                conservativities[i], 0, i)
             for i in range(len(unevaluated_expressions))]
 
 
