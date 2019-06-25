@@ -1,3 +1,4 @@
+import math
 from collections import namedtuple
 
 from SetPlaceholders import SetPlaceholder
@@ -14,6 +15,11 @@ operators = {
     ),
     ">f": Operator(
         lambda model, x, y: x > y,
+        (float,float),
+        bool
+    ),
+    "=f": Operator(
+        lambda model, x, y: math.isclose(x,y),
         (float,float),
         bool
     ),
@@ -96,5 +102,10 @@ operators = {
         lambda model, X, Y, q: get_cardinality(model, X) / get_cardinality(model, Y) > q if get_cardinality(model, Y) > 0 else 0,
         (SetPlaceholder,SetPlaceholder,float),
         bool
+    ),
+    "%": Operator(
+        lambda model, x, y: x % y if y > 0 else 0,
+        (int, int),
+        int
     )
 }

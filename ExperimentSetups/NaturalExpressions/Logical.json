@@ -1,0 +1,19 @@
+[
+  ["subset","A","B"],
+  ["subset","B","A"],
+  [">",["card",["intersection","A","B"]],["card",["diff","A","B"]]],
+  [">",["card",["intersection","A","B"]],["card",["diff","B","A"]]],
+  [">",["card",["diff","A","B"]],["card",["intersection","A","B"]]],
+  [">",["card",["diff","B","A"]],["card",["intersection","A","B"]]],
+  [">",["card",["intersection","A","B"]],"n"],
+  [">",["card",["diff","A","B"]],"n"],
+  [">",["card",["diff","B","A"]],"n"],
+  [">","n",["card",["intersection","A","B"]]],
+  [">","n",["card",["diff","A","B"]]],
+  [">","n",["card",["diff","B","A"]]],
+  [">f",["/",["card",["intersection","A","B"]],["card","A"]],"f"],
+  [">f",["/",["card",["diff","A","B"]],["card","A"]],"f"],
+  ["=",["card",["intersection","A","B"]],"n"],
+  ["=",["card",["diff","A","B"]],"n"],
+  ["=",["card",["diff","B","A"]],"n"]
+]
