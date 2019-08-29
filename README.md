@@ -35,7 +35,17 @@ Measuring of languages:
 
 ## Requirements
 
-Python 3.5. Get the required packages by running `pip install`.
+Python >=3.5. Get the required packages by running `pip install`.
+
+Or: 
+```
+conda create --name siminf python=3.7
+conda activate siminf
+conda install --file requirements.txt -c conda-forge
+```
+
+NB: if using a `conda` environment on macOS, you should additionally do `conda install python.app` and then use `pythonw` to run anything requiring visualization.  (See https://stackoverflow.com/questions/54282402/error-when-running-matplotlib-in-anaconda)
+
 
 ## Running the code
 
