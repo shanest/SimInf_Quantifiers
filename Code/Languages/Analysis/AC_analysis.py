@@ -59,7 +59,8 @@ estimated_pareto = pd.DataFrame({'comm_cost':x, 'complexity':y})
 
 plot = (ggplot(aes(x='comm_cost', y='complexity')) +
         geom_line(size=1, data=estimated_pareto) +
-        geom_point(aes(color='naturalness'), alpha=0.6, data=main_data))
+        geom_point(aes(color='naturalness'), alpha=1.0, data=main_data) +
+        scale_color_cmap('cividis'))
 plot.save('naturalness_with_pareto.png', width=12, height=8, dpi=300)
 
 
