@@ -57,22 +57,30 @@ for (left, right) in zip(values[:-1], values[1:]):
 
 estimated_pareto = pd.DataFrame({'comm_cost':x, 'complexity':y})
 
+"""
 plot = (ggplot(aes(x='comm_cost', y='complexity')) +
         geom_line(size=1, data=estimated_pareto) +
         geom_point(aes(color='naturalness'), size=1.0, stroke=0.0, alpha=1.0, data=main_data) +
         scale_color_cmap('cividis'))
 plot.save('naturalness_with_pareto.png', width=6, height=4, dpi=300)
+"""
 
 
 def standardize(data, cols):
     for col in cols:
         data[col] = (data[col] - data[col].mean()) / data[col].std()
 
+main_data['optimality'] = 1 - main_data['pareto_closeness']
 
 standardize(main_data,
-            ['pareto_closeness', 'naturalness', 'monotonicity', 'conservativity'])
+            ['pareto_closeness', 'naturalness', 'monotonicity', 'conservativity', 'optimality'])
 
 model = smf.ols(formula='pareto_closeness ~ naturalness', data=main_data)
+results = model.fit()
+print(results.summary())
+print(results.pvalues)
+
+model = smf.ols(formula='optimality ~ naturalness', data=main_data)
 results = model.fit()
 print(results.summary())
 print(results.pvalues)
