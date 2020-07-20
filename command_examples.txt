@@ -1,0 +1,16 @@
+#
+# command examples for Windows
+#
+# assume your working direcotory is 
+#     ...\SimInf_Quantifiers 
+# where package of siminf code is downloaded and installed with
+# the following directory structures:
+#     .\bin
+#     .\expriment_setups
+#     .\results
+#     .\siminf
+
+
+set PYTHONPATH=...\SimInf_Quantifiers
+python bin/generate.py --setup experiment_setups/logical.json --max_quantifier_length 2 --model_size 2
+python bin/measure_expression_complexity.py --setup experiment_setups/logical.json --max_quantifier_length 2 --model_size 2
