@@ -13,3 +13,4 @@ Set PYTHONPATH to the working directory. For example:
 Run experiments. For example: 
 
 	python siminf/individual_quantifiers/generate.py --setup experiment_setups/logical.json --max_quantifier_length 2 --model_size 2
+	python siminf/individual_quantifiers/measure_expression_complexity.py --setup experiment_setups/logical.json --max_quantifier_length 2 --model_size 2

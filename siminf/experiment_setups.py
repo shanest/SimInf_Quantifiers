@@ -25,15 +25,28 @@ class ExperimentSetup(object):
 def parse(filename):
     with open(filename) as file:
         props = json.load(file)
-
-    return ExperimentSetup(
-        props['name'],
-        path.join(path.dirname(filename), props['lexical_quantifiers_filename']),
-        path.join(path.dirname(filename), 'Languages/{0}'.format(props['name'])),
-        locate(props['model_generator']),
-        locate(props['primitive_generator']),
-        locate(props['primitive_parser']),
-        locate(props['expression_complexity_measurer']),
-        locate(props['quantifier_complexity_measurer']),
-        props['operators']
+        
+        name = props['name']
+        lexical_quantifiers_filename = \
+            path.join(path.dirname(filename), props['lexical_quantifiers_filename'])
+        natural_languages_dirname = \
+            path.join(path.dirname(filename), 'Languages/{0}'.format(props['name']))
+        model_generator = locate(props['model_generator'])
+        primitive_generator = locate(props['primitive_generator'])
+        primitive_parser = locate(props['primitive_parser'])
+        expression_complexity_measurer = locate(props['expression_complexity_measurer'])
+        quantifier_complexity_measurer = locate(props['quantifier_complexity_measurer'])
+        operators = props['operators']
+    
+    setup = ExperimentSetup(
+        name,
+        lexical_quantifiers_filename,
+        natural_languages_dirname,
+        model_generator,
+        primitive_generator,
+        primitive_parser,
+        expression_complexity_measurer,
+        quantifier_complexity_measurer,
+        operators
     )
+    return setup
