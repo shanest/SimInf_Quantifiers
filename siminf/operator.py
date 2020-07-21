@@ -1,14 +1,10 @@
 import math
 from collections import namedtuple
 
-#from SetPlaceholders import SetPlaceholder
-from siminf.set_place_holders import SetPlaceholder # to replace from SetPlaceholders import SetPlaceholder
+from siminf.set_place_holders import SetPlaceholder
+from siminf import set_place_holders as sph 
 
-#import SetPlaceholders
-from siminf import set_place_holders as sph #to replace import SetPlaceholders
-
-#from GeneralizedQuantifierModel import get_cardinality, subset
-from siminf.generalized_quantifier_model import get_cardinality, subset # to replace from GeneralizedQuantifierModel import get_cardinality, subset
+from siminf.generalized_quantifier_model import get_cardinality, subset 
 
 Operator = namedtuple("Operator", "func inputTypes outputType")
 
