@@ -1,33 +1,12 @@
 import argparse
 from pathos.pools import ProcessPool
-
-#import ExperimentSetups
 from siminf.experiment_setups import ExperimentSetup
 from siminf import experiment_setups 
-
-
 # Parameters
-#import fileutil
 from siminf import fileutil
-
-#from fileutil import FileUtil
 from siminf.fileutil import FileUtil
 
-parser = argparse.ArgumentParser(description="Generate Quantifiers")
-parser.add_argument('--setup', help='Path to the setup json file.', required=True)
-parser.add_argument('--max_quantifier_length', type=int, required=True)
-parser.add_argument('--model_size', type=int, required=True)
-parser.add_argument('--dest_dir', default='results')
-parser.add_argument('--processes', default=4, type=int)
-
-args = parser.parse_args()
-
 def main():
-
-    # processes = args.processes
-    # setup = ExperimentSetups.parse(args.setup)
-    # max_quantifier_length = args.max_quantifier_length
-    # model_size = args.model_size
     
     processes = args.processes
     setup = experiment_setups.parse(args.setup)
@@ -52,4 +31,12 @@ def main():
     print('Complexity Measuring finished.')
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate Quantifiers")
+    parser.add_argument('--setup', help='Path to the setup json file.', required=True)
+    parser.add_argument('--max_quantifier_length', type=int, required=True)
+    parser.add_argument('--model_size', type=int, required=True)
+    parser.add_argument('--dest_dir', default='results')
+    parser.add_argument('--processes', default=4, type=int)
+    args = parser.parse_args()
+    
     main()

@@ -11,15 +11,6 @@ from siminf import experiment_setups
 from siminf import fileutil
 from siminf.fileutil import FileUtil
 
-parser = argparse.ArgumentParser(description="Generate Quantifiers")
-parser.add_argument('--setup', help='Path to the setup json file.', required=True)
-parser.add_argument('--max_quantifier_length', type=int, required=True)
-parser.add_argument('--model_size', type=int, required=True)
-parser.add_argument('--dest_dir', default='results')
-parser.add_argument('--processes', default=4, type=int)
-
-args = parser.parse_args()
-
 def main():
 
     processes = args.processes
@@ -28,7 +19,6 @@ def main():
     model_size = args.model_size
     
     file_util = FileUtil(fileutil.base_dir(args.dest_dir, setup.name, max_quantifier_length, model_size))
-    
     
     universe = setup.generate_models(model_size)
     
@@ -52,4 +42,12 @@ def main():
     print('Expression generation finished.')
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate Quantifiers")
+    parser.add_argument('--setup', help='Path to the setup json file.', required=True)
+    parser.add_argument('--max_quantifier_length', type=int, required=True)
+    parser.add_argument('--model_size', type=int, required=True)
+    parser.add_argument('--dest_dir', default='results')
+    parser.add_argument('--processes', default=4, type=int)
+    args = parser.parse_args()
+    
     main()
