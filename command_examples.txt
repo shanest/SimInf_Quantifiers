@@ -14,3 +14,4 @@
 set PYTHONPATH=...\SimInf_Quantifiers
 python bin/generate.py --setup experiment_setups/logical.json --max_quantifier_length 2 --model_size 2
 python bin/measure_expression_complexity.py --setup experiment_setups/logical.json --max_quantifier_length 2 --model_size 2
+python bin/measure_expression_informativeness.py --setup experiment_setups/logical.json --max_quantifier_length 2 --model_size 2
