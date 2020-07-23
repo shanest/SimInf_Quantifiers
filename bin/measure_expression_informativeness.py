@@ -4,14 +4,14 @@ from pathos.pools import ProcessPool
 from siminf.experiment_setups import ExperimentSetup 
 from siminf import experiment_setups 
 
-# # Parameters
+# Parameters
 from siminf import measurer 
 
 from siminf import fileutil 
 from siminf.fileutil import FileUtil 
 
 
-def main():
+def main(args):
     processes = args.processes
     setup = experiment_setups.parse(args.setup)
     max_quantifier_length = args.max_quantifier_length
@@ -43,4 +43,4 @@ if __name__ == "__main__":
     parser.add_argument('--processes', default=4, type=int)
     args = parser.parse_args()
     
-    main()
+    main(args)

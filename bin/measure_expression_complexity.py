@@ -6,7 +6,7 @@ from siminf import experiment_setups
 from siminf import fileutil
 from siminf.fileutil import FileUtil
 
-def main():
+def main(args):
     
     processes = args.processes
     setup = experiment_setups.parse(args.setup)
@@ -39,4 +39,4 @@ if __name__ == "__main__":
     parser.add_argument('--processes', default=4, type=int)
     args = parser.parse_args()
     
-    main()
+    main(args)
