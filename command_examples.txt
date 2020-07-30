@@ -12,6 +12,25 @@
 
 
 set PYTHONPATH=...\SimInf_Quantifiers
+
+#
+# The following are all run with arguments --setup experiment_setups/logical.json --max_quantifier_length 2 --model_size 2
+#
 python bin/generate.py --setup experiment_setups/logical.json --max_quantifier_length 2 --model_size 2
 python bin/measure_expression_complexity.py --setup experiment_setups/logical.json --max_quantifier_length 2 --model_size 2
 python bin/measure_expression_informativeness.py --setup experiment_setups/logical.json --max_quantifier_length 2 --model_size 2
+python bin/merge_presuppositions.py --setup experiment_setups/logical.json --max_quantifier_length 2 --model_size 2
+python bin/calculate_meanings.py --setup experiment_setups/logical.json --model_size 2
+#
+# The following two must be run prior to the subsequent *_monotonicity.py and *_conservativity.py
+# All with arguments --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4 
+#
+python bin/generate.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4  
+python bin/measure_expression_complexity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4
+# 
+python bin/measure_expression_monotonicity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4
+python bin/measure_expression_conservativity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4
+
+
+
+
