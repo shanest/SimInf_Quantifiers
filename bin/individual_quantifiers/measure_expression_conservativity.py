@@ -2,7 +2,7 @@ from pathos.multiprocessing import ProcessPool
 
 from siminf import generator
 from siminf import analysisutil
-from siminf.monotonicity import MonotonicityMeasurer
+from siminf.conservativity import ConservativityMeasurer
 
 def main():
 
@@ -12,8 +12,8 @@ def main():
 
     universe = generator.generate_simplified_models(args.model_size)
 
-    measurer_a = MonotonicityMeasurer(universe,args.model_size,'A')
-    measurer_b = MonotonicityMeasurer(universe,args.model_size,'B')
+    measurer_a = ConservativityMeasurer(universe,args.model_size,'A')
+    measurer_b = ConservativityMeasurer(universe,args.model_size,'B')
 
     with ProcessPool(nodes=args.processes) as process_pool:
         conservativities_a = process_pool.map(measurer_a, meanings)
