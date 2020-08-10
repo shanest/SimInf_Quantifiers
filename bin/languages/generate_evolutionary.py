@@ -14,7 +14,7 @@ from siminf.languages import language_loader, language_generator
 from siminf.languages.complexity_measurer import SumComplexityMeasurer
 from siminf.languages.informativeness_measurer import SimMaxInformativenessMeasurer
 
-def remove(language, expressions=None):
+def remove(language):
     language = copy(language)
     index = random.randint(0,len(language)-1)
     language.pop(index)
@@ -33,14 +33,24 @@ def interchange(language, expressions):
     return add(remove(language), expressions)
 
 def mutate(language, expressions):
+    lang_ret = language  #default; no mutation
     possible_mutations = [interchange]
     if len(language) < args.lang_size:
         possible_mutations.append(add)
+        
     if len(language) > 1:
         possible_mutations.append(remove)
 
-    mutation = random.choice(possible_mutations)
-    return mutation(language, expressions)
+    mutation = random.choice(possible_mutations)  # randomly choose a function
+    if mutation == interchange or \
+       mutation == add:
+        lang_ret = mutation(language, expressions)  # expressions required
+    elif mutation == remove:
+        lang_ret = mutation(language)  # expressions not required
+    else:
+        lang_ret = language  # no mutation
+    
+    return lang_ret
 
 
 def sample_mutated(languages, amount, expressions):
