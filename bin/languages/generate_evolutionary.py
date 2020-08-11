@@ -14,7 +14,9 @@ from siminf.languages import language_loader, language_generator
 from siminf.languages.complexity_measurer import SumComplexityMeasurer
 from siminf.languages.informativeness_measurer import SimMaxInformativenessMeasurer
 
-def remove(language):
+def remove(language, expressions=None):
+    # the expressions argument is added so that the function
+    # has the same signature as that of function add and interchange
     language = copy(language)
     index = random.randint(0,len(language)-1)
     language.pop(index)
@@ -33,25 +35,14 @@ def interchange(language, expressions):
     return add(remove(language), expressions)
 
 def mutate(language, expressions):
-    lang_ret = language  #default; no mutation
     possible_mutations = [interchange]
     if len(language) < args.lang_size:
         possible_mutations.append(add)
-        
     if len(language) > 1:
         possible_mutations.append(remove)
-
-    mutation = random.choice(possible_mutations)  # randomly choose a function
-    if mutation == interchange or \
-       mutation == add:
-        lang_ret = mutation(language, expressions)  # expressions required
-    elif mutation == remove:
-        lang_ret = mutation(language)  # expressions not required
-    else:
-        lang_ret = language  # no mutation
-    
-    return lang_ret
-
+    # calls a randomly selected function from remove, add, and interchange    
+    mutation = random.choice(possible_mutations)
+    return mutation(language, expressions)
 
 def sample_mutated(languages, amount, expressions):
     amount -= len(languages)
@@ -80,8 +71,9 @@ def sample_mutated(languages, amount, expressions):
 def main(args):    
     setup = experiment_setups.parse(args.setup)
     use_base_dir = False
-    dirname = fileutil.base_dir(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size) if use_base_dir \
-        else fileutil.run_dir(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size, args.name)
+    dirname = fileutil.base_dir(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size) \
+                if use_base_dir else \
+              fileutil.run_dir(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size, args.name)
     file_util = FileUtil(dirname)
     
     expressions = language_loader.load_all_evaluated_expressions(file_util)
