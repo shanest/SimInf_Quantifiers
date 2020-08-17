@@ -1,0 +1,7 @@
+{
+  "all": ["subset","A","B"],
+  "most": [">",["card",["intersection","A","B"]],["card",["diff","A","B"]]],
+  "a": [">",["card",["intersection","A","B"]],0],
+  "many": [">f",["/",["card",["intersection","A","B"]],["card","A"]],0.25],
+  "no": ["=",["card",["intersection","A","B"]],0]
+}
