@@ -34,6 +34,15 @@ python bin/individual_quantifiers/measure_expression_conservativity.py --setup e
 python bin/languages/generate_evolutionary.py --setup=experiment_setups/final.json --max_quantifier_length=4 --model_size=4 --lang_size=8 --sample_size=16 --generations=2 --max_mutations=2 --name=evolutionary
 python bin/languages/languages.py --setup=experiment_setups/final.json --max_quantifier_length=4 --model_size=4 --max_words=5 --indices=natural --sample=2000 --name=natural_2000
 python bin/languages/measure.py --setup=experiment_setups/final.json --max_quantifier_length=4 --model_size=4 --max_words=5 --name=natural_2000 --comp_strat=wordcomplexity --inf_strat=simmax
+#
+# The following three (3) differ in the --comp_strat argument.
+#
+python bin/languages/measure_complexity.py --setup=experiment_setups/final.json --max_quantifier_length=4 --model_size=4 --max_words=10 --comp_strat=wordcount --name=natural_gradual_2000
+python bin/languages/measure_complexity.py --setup=experiment_setups/final.json --max_quantifier_length=4 --model_size=4 --max_words=10 --comp_strat=wordcomplexity --name=natural_gradual_2000
+python bin/languages/measure_complexity.py --setup=experiment_setups/final.json --max_quantifier_length=4 --model_size=4 --max_words=10 --comp_strat=special --name=natural_gradual_2000
+#
+python bin/languages/sample_indexset_degrees.py --setup=experiment_setups/final.json --max_quantifier_length=4 --model_size=4 --indices=natural --max_words=2 --sample=1 --name=natural_gradual_2000
+
 
 
 
