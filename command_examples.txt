@@ -54,6 +54,10 @@ python bin/languages/sample_indexset_degrees.py --setup=experiment_setups/final.
 python bin/languages/coinflip_languages.py --setup experiment_setups/final.json --max_quantifier 4 --model_size 4 --max_words 2 --fixedwordcount 10 --name=natural_gradual_2000
 python bin/languages/coinflip_languages.py --setup experiment_setups/final.json --max_quantifier 4 --model_size 4 --max_words 2 --fixedwordcount 10 --sample 10 --name=natural_gradual_2000
 python bin/languages/coinflip_languages.py --setup experiment_setups/final.json --max_quantifier 4 --model_size 4 --max_words 2 --fixedwordcount 10 --sample 10 --random_size 100 --name=natural_gradual_2000
+#
+# with enhanced experiment_setups2.py and final2.json
+#
+python bin/languages/coinflip_languages2.py --setup experiment_setups/final2.json
 
 
 
