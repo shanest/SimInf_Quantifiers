@@ -61,8 +61,7 @@ class ExperimentSetup2(Mapping):
         
             
     def __str__(self):
-        repr = 'ExperimentSetup:' \
-             + '\n  ' + '-------common-setups-------' \
+        repr =   '  ' + '======= common setups =======' \
              + '\n  ' + 'name: {0.name}'.format(self) \
              + '\n  ' + 'lexical_quantifiers_filename: {0.lexical_quantifiers_filename}'.format(self) \
              + '\n  ' + 'natural_languages_dirname: {0.natural_languages_dirname}'.format(self) \
@@ -73,20 +72,33 @@ class ExperimentSetup2(Mapping):
              + '\n  ' + 'measure_expression_complexity: {0}'.format(self.measure_expression_complexity) \
              + '\n  ' + 'measure_quantifier_complexity: {0}'.format(self.measure_quantifier_complexity) \
                                                                                                          \
-             + '\n  ' + '-------setups of quantifiers, sizes, etc-------' \
+             + '\n  ' + '======= quantifiers, sizes, etc =======' \
              + '\n  ' + 'max_quantifier_length: {0}'.format(self.max_quantifier_length)  \
              + '\n  ' + 'model_size: {0}'.format(self.model_size)  \
              + '\n  ' + 'dest_dir: {0}'.format(self.dest_dir)  \
              + '\n  ' + 'processes: {0}'.format(self.processes)  \
              + '\n  ' + 'run_name: {0}'.format(self.run_name)  \
                                                                \
-             + '\n  ' + '-------setups of results-------' \
+             + '\n  ' + '======= results =======' \
              + '\n  ' + 'use_base_dir: {0}'.format(self.use_base_dir) \
              + '\n  ' + 'dirname: {0}'.format(self.dirname) \
              + '\n  ' + 'file_util: {0}'.format(self.file_util)
                  
           
         return repr
+    
+    def show_loaded_setups(self):
+        print("loaded setups")
+        for (k, v) in self._props.items():
+            print ("  {0} = {1}".format(k, v))
+    
+    def show_parsed_setups(self):
+        print("parsed setups")
+        print(self)
+        
+
+    def loaded_setups(self):
+        return self._props
     
         
 def parse(filename):

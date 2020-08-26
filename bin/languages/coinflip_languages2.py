@@ -3,15 +3,16 @@ import random
 from collections import namedtuple
 from pathos.multiprocessing import ProcessPool
 
+from siminf import experiment_setups2
 from siminf import generator
-from siminf import experiment_setups2 
 from siminf.languages.complexity_measurer import WordCountComplexityMeasurer
 from siminf.languages.informativeness_measurer import InformativenessMeasurer, SimMaxInformativenessMeasurer
 from siminf.languages.language_generator import generate_all, generate_sampled, EvaluatedExpression
 
 def main(args):   
     setup = experiment_setups2.parse(args.setup)
-    print(setup)
+    setup.show_loaded_setups()
+    setup.show_parsed_setups()
     
     languages = []
     universe = generator.generate_simplified_models(setup.model_size)
