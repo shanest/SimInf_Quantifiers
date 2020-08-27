@@ -1,40 +1,36 @@
 import argparse
 import json
-
 from siminf import experiment_setups
 from siminf import generator
 from siminf import parser as siminf_parser
 from siminf import fileutil
 from siminf.languages.complexity_measurer import WordCountComplexityMeasurer, SumComplexityMeasurer
+from siminf.measurer import SpecialComplexityMeasurer
 from siminf.languages.informativeness_measurer import SimMaxInformativenessMeasurer, InformativenessMeasurer
+from siminf.monotonicity import MonotonicityMeasurer
+from siminf.conservativity import ConservativityMeasurer
 from siminf.languages.language_generator import EvaluatedExpression
 from siminf.fileutil import FileUtil
 import os
 
-def parse_language(filename, setup, universe):
+def parse_language(filename, setup, universe, \
+                   monotonicity_measurer, conservativity_measurer, special_complexity_measurer):
     calculate_meaning = generator.MeaningCalculator(universe)
     with open(filename, 'r') as file:
         spec_dict = json.load(file)
     language = []
+
+    index = 0
     for spec in spec_dict.values():
         expression = siminf_parser.parse_expression(spec, setup)
         complexity = setup.measure_expression_complexity(expression, args.max_quantifier_length)
         meaning = calculate_meaning(expression)
         
-        # TO DO: the following 4 measurement must be calculated
-        #monotonicity
-        monotonicity = 0.5
-        
-        #conservativity
-        conservativity = 0.5
-        
-        #special_complexity
-        special_complexity = 0.5
-        
-        #index
-        index = 0
-        
-        #language.append(EvaluatedExpression(expression, meaning, complexity))
+        monotonicity = monotonicity_measurer(meaning)
+        conservativity = conservativity_measurer(meaning)
+        special_complexity = special_complexity_measurer(expression)
+        index += 1
+
         language.append(EvaluatedExpression(expression, meaning, complexity, monotonicity, \
                                             conservativity, special_complexity, index))
     return language
@@ -45,6 +41,11 @@ def main(args):
     file_util = FileUtil(fileutil.run_dir(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size, args.name))
     
     universe = generator.generate_simplified_models(args.model_size)
+    monotonicity_measure = MonotonicityMeasurer(universe, args.model_size, 'A')
+    conservativity_measurer = ConservativityMeasurer(universe, args.model_size, 'A')
+    #special_complexity_measurer = SpecialComplexityMeasurer(args.max_words)
+    special_complexity_measurer = SpecialComplexityMeasurer(setup.operators, args.model_size)
+    
 
     if args.inf_strat == 'exact':
         informativeness_measurer = InformativenessMeasurer(len(universe))
@@ -68,7 +69,10 @@ def main(args):
     for filename in os.listdir(languages_dir):
         if filename.endswith('.json'):
             language_file = os.path.join(languages_dir, filename)
-            language = parse_language(language_file, setup, universe)
+            language = parse_language(language_file, setup, universe, \
+                                      monotonicity_measure, \
+                                      conservativity_measurer, \
+                                      special_complexity_measurer)
             languages.append(language)
             language_names.append(filename[:-5])  # Name without extension
 
