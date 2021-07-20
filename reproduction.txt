@@ -20,3 +20,4 @@ python bin/languages/measure_monotonicity.py --setup experiment_setups/final.jso
 python bin/languages/measure_conservativity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4 --name natural_gradual
 
 # TODO: analysis!!!
+python bin/languages/analysis/analysis.py --setup experiment_setups/final.json --model_size 4 --max_quantifier_length 4 --name natural_gradual --comp_strat wordcomplexity --inf_strat simmax --pareto evolutionary --table_name main_data
