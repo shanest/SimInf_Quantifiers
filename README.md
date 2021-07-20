@@ -3,6 +3,8 @@
 
 This code accompanies XXX.  
 
+**Acknowledgments:** The code was initially developed by Wouter Posdijk for his MSc Logic thesis in Amsterdam (see the repo this is forked from).  Qi C Guo also provided significant development time.
+
 The code consists of the following parts:
 
 Generation:
