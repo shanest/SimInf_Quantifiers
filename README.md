@@ -112,3 +112,4 @@ This will put the results of said code in results/[ExperimentSetupName]\_length=
     - incorporate into the setup instead of command-line: max quantifier length, model size, comp strat, inf strat
     - move from json to yaml?
 * General cleaning:
+* Finalize `siminf` as actual package
