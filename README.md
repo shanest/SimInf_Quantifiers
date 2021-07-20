@@ -62,7 +62,13 @@ This will put the results of said code in results/[ExperimentSetupName]\_length=
 
 `export PYTHONPATH=$PYTHONPATH:./`
 
+
+#### generate individual quantifiers
+
 `python bin/individual_quantifiers/generate.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4`
+
+
+#### measure properties of them
 
 `python bin/individual_quantifiers/measure_expression_complexity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4`
 
@@ -71,8 +77,12 @@ This will put the results of said code in results/[ExperimentSetupName]\_length=
 `python bin/individual_quantifiers/measure_expression_conservativity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4`
 
 
+#### generate pseudo-natural quantifiers
+
 `python bin/individual_quantifiers/generate_natural_expressions.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4  `
 
+
+#### run evolutionary algorithm to estimate pareto frontier
 
 `python bin/languages/generate_evolutionary.py --setup=experiment_setups/final.json --max_quantifier_length=4 --model_size=4 --lang_size=8 --sample_size=16 --generations=2 --max_mutations=2 --name=evolutionary`
 
