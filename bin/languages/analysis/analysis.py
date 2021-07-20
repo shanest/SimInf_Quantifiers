@@ -5,10 +5,9 @@ from numpy.linalg import norm
 import pygmo
 import plotnine as pn
 from siminf import analysisutil
+import statsmodels.formula.api as smf
 
-(args, setup, file_util) = analysisutil.init(use_base_dir=False)
-
-# pareto_data = LanguageLoader.load_pandas_table(file_util.get_sub_file_util(args.pareto), 'wordcomplexity', 'simmax', include_monotonicity=False)
+(args, setup, file_util) = analysisutil.init(use_base_dir=True)
 
 def load_data(file_util, complexity_strategy, informativeness_strategy):
     complexity = file_util.load_dill('complexity_{0}.dill'.format(complexity_strategy))
@@ -21,42 +20,30 @@ def load_data(file_util, complexity_strategy, informativeness_strategy):
         fname = '{}.dill'.format(property)
         if file_util.exists(fname):
             data[property] = file_util.load_dill(fname)
-    print(data)
-    for key in data:
-        print(key)
-        print(len(data[key]))
     return pd.DataFrame(data)
 
-main_data = load_data(file_util, args.comp_strat, args.inf_strat)
-print(main_data)
 
-base_plot = (pn.ggplot(pn.aes(x='comm_cost',y='complexity')) +
-         pn.geom_point(pn.aes(color='factor(run)'), data=run_df))
+main_data = load_data(file_util.get_sub_file_util(args.name), args.comp_strat, args.inf_strat)
 
-print(base_plot)
-
-plot = base_plot + pn.geom_point(data=pareto_data)
-print(plot)
+pareto_data = load_data(file_util.get_sub_file_util(args.pareto), args.comp_strat, args.inf_strat)
 
 
-complexity = list(pareto_data['complexity'].values) + list(run_df['complexity'].values)
-comm_cost = list(pareto_data['comm_cost'].values) + list(run_df['comm_cost'].values)
+# combine complexities and costs
+complexity = list(pareto_data['complexity'].values) + list(main_data['complexity'].values)
+comm_cost = list(pareto_data['comm_cost'].values) + list(main_data['comm_cost'].values)
 
 
-class MinEuclidianDistanceCalculator(object):
-
-    def __init__(self, pareto_front):
-        self.pareto_front = pareto_front
-
-    def __call__(self, point):
-        min_dist = np.Infinity
-        for pareto_point in self.pareto_front:
-            dist = norm(pareto_point-point)
-            if dist < min_dist:
-                min_dist = dist
-        return min_dist
+def calculate_min_distance(pareto_front, point):
+    min_dist = np.Infinity
+    for pareto_point in pareto_front:
+        dist = norm(pareto_point-point)
+        if dist < min_dist:
+            min_dist = dist
+    return min_dist
 
 
+# estimate pareto frontier
+# TODO: clean this up!!
 dominating_indices = pygmo.non_dominated_front_2d(list(zip(complexity,comm_cost)))
 dominating_complexity = [complexity[i] for i in dominating_indices]
 dominating_comm_cost = [comm_cost[i] for i in dominating_indices]
@@ -65,10 +52,6 @@ values = list(zip(dominating_comm_cost, dominating_complexity))
 values.sort(key=lambda val: -val[1])
 values.sort(key=lambda val: val[0])
 values = [np.array(value) for value in values]
-
-pareto_values = pd.DataFrame({'comm_cost': dominating_comm_cost, 'complexity': dominating_complexity})
-plot = base_plot + pn.geom_point(data=pareto_values)
-print(plot)
 
 x = []
 y = []
@@ -89,20 +72,44 @@ for (left, right) in zip(values[:-1], values[1:]):
     x.append(right[0])
     y.append(right[1])
 
-estimated_pareto = pd.DataFrame({'comm_cost':x, 'complexity':y})
+estimated_pareto = pd.DataFrame({'comm_cost': x, 'complexity': y})
+file_util.save_pandas_csv(estimated_pareto, 'estimated_pareto.csv')
 
-
-plot = base_plot + pn.geom_point(data=estimated_pareto)
-print(plot)
-
-dist_calculator = MinEuclidianDistanceCalculator(np.array(list(zip(x,y))))
+pareto_points = np.array(list(zip(x, y)))
 
 
 with ProcessPool(nodes=args.processes) as pool:
-    comm_cost = list(run_df['comm_cost'].values)
-    complexity = list(run_df['complexity'].values)
+    comm_cost = list(main_data['comm_cost'].values)
+    complexity = list(main_data['complexity'].values)
     points = np.array(list(zip(comm_cost, complexity)))
-    distances = pool.map(dist_calculator, points)
-    run_df['pareto_closeness'] = distances
+    distances = pool.map(lambda point: calculate_min_distance(pareto_points, point), points)
+    main_data['pareto_closeness'] = distances
 
-file_util.save_pandas_csv(run_df, 'pandas_{0}.csv'.format(args.table_name))
+file_util.save_pandas_csv(main_data, '{0}.csv'.format(args.table_name))
+
+
+plot = (pn.ggplot(pn.aes(x='comm_cost', y='complexity')) +
+        pn.geom_line(size=1, data=estimated_pareto) +
+        pn.geom_point(pn.aes(color='naturalness'), size=1.0, stroke=0.0, alpha=1.0, data=main_data) +
+        pn.scale_color_cmap('cividis'))
+plot.save('naturalness_with_pareto.png', width=6, height=4, dpi=300)
+
+
+def standardize(data, cols):
+    for col in cols:
+        data[col] = (data[col] - data[col].mean()) / data[col].std()
+
+main_data['optimality'] = 1 - main_data['pareto_closeness']
+
+standardize(main_data,
+            ['pareto_closeness', 'naturalness', 'monotonicity', 'conservativity', 'optimality'])
+
+model = smf.ols(formula='pareto_closeness ~ naturalness', data=main_data)
+results = model.fit()
+print(results.summary())
+print(results.pvalues)
+
+model = smf.ols(formula='optimality ~ naturalness', data=main_data)
+results = model.fit()
+print(results.summary())
+print(results.pvalues)

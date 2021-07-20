@@ -12,10 +12,11 @@ def init(use_base_dir=False):
     parser.add_argument('--dest_dir', default='results')
     parser.add_argument('--comp_strat', required=True)
     parser.add_argument('--inf_strat', required=True)
+    parser.add_argument('--pareto', required=True)
+    parser.add_argument('--table_name', required=True)
     parser.add_argument('--processes', default=4, type=int)
-    parser.add_argument('--name', default='run_0')
+    parser.add_argument('--name', required=True)
     
-    add_argument = parser.add_argument
     args = parser.parse_args()
     
     setup = experiment_setups.parse(args.setup)
