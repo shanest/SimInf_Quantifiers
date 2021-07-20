@@ -10,14 +10,14 @@ def main():
 
     meanings = file_util.load_dill('meanings.dill')
 
-    universe = generator.generate_simplified_models(args.model_size)
+    universe = generator.generate_simplified_models(setup.model_size)
 
-    measurer_a_up = MonotonicityMeasurer(universe,args.model_size,'A')
-    measurer_b_up = MonotonicityMeasurer(universe,args.model_size,'B')
-    measurer_a_down = MonotonicityMeasurer(universe,args.model_size,'A',down=True)
-    measurer_b_down = MonotonicityMeasurer(universe,args.model_size,'B',down=True)
+    measurer_a_up = MonotonicityMeasurer(universe,setup.model_size,'A')
+    measurer_b_up = MonotonicityMeasurer(universe,setup.model_size,'B')
+    measurer_a_down = MonotonicityMeasurer(universe,setup.model_size,'A',down=True)
+    measurer_b_down = MonotonicityMeasurer(universe,setup.model_size,'B',down=True)
 
-    with ProcessPool(nodes=args.processes) as process_pool:
+    with ProcessPool(nodes=setup.processes) as process_pool:
         monotonicities_a_up = process_pool.map(measurer_a_up, meanings)
         monotonicities_b_up = process_pool.map(measurer_b_up, meanings)
         monotonicities_a_down = process_pool.map(measurer_a_down, meanings)

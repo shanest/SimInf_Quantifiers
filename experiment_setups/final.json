@@ -1,6 +1,10 @@
 {
   "-------common-setups-------": "",
   "name": "final",
+  "pareto_name": "evolutionary",
+  "natural_name": "natural_gradual",
+  "use_base_dir": "True",
+
   "lexical_quantifiers_filename": "English_quantifiers/logical.json",
   "model_generator": "siminf.generator.generate_simplified_models",
   "primitive_generator": "siminf.generator.generate_simple_primitive_expressions_with_sets",
@@ -14,14 +18,16 @@
   "model_size": "4",
   "dest_dir": "results",
   "processes": "4",
+
+  "-------analysis methods--------": "",
+  "comp_strat": "wordcomplexity",
+  "inf_strat": "simmax",
+  "max_words": 5,
   
   "-------set up of results, etc-------": "",
-  "run_name" : "run_0",
-  "use_base_dir": "false",
   
   "-------bin/languages/coinflip_languages specific-------": "",
   "random_size": "100",
-  "max_words": "2",
   "fixedwordcount": "10",
   "sample": "10"
 }

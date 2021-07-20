@@ -17,16 +17,13 @@ def measure_monotonicity(language):
 
 def main(args):
     setup = experiment_setups.parse(args.setup)
-    dirname = fileutil.run_dir(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size, args.name)
+    dirname = fileutil.run_dir(setup.dest_dir, setup.name, setup.max_quantifier_length, setup.model_size, setup.natural_name)
     file_util = FileUtil(dirname)
     languages = language_loader.load_languages(file_util)
     
-    print("args.processes={0}".format(args.processes))
-    with ProcessPool(nodes=args.processes) as process_pool:
+    with ProcessPool(nodes=setup.processes) as process_pool:
         monotonicities = process_pool.map(measure_monotonicity, languages)
 
-    print(len(languages))
-    print(len(monotonicities))
     file_util.dump_dill(monotonicities, 'monotonicity.dill')
 
     print("measure_monotonicity.py finished.")
@@ -35,11 +32,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Analyze")
     #common arguments
     parser.add_argument('--setup', help='Path to the setup json file.', required=True)
-    parser.add_argument('--max_quantifier_length', type=int, required=True)
-    parser.add_argument('--model_size', type=int, required=True)
-    parser.add_argument('--dest_dir', default='results')
-    parser.add_argument('--processes', default=4, type=int)
-    parser.add_argument('--name', default='run_0')
     #parse args
     args = parser.parse_args()
     main(args)

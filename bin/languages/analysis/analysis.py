@@ -23,9 +23,9 @@ def load_data(file_util, complexity_strategy, informativeness_strategy):
     return pd.DataFrame(data)
 
 
-main_data = load_data(file_util.get_sub_file_util(args.name), args.comp_strat, args.inf_strat)
+main_data = load_data(file_util.get_sub_file_util(setup.natural_name), setup.comp_strat, setup.inf_strat)
 
-pareto_data = load_data(file_util.get_sub_file_util(args.pareto), args.comp_strat, args.inf_strat)
+pareto_data = load_data(file_util.get_sub_file_util(setup.pareto_name), setup.comp_strat, setup.inf_strat)
 
 
 # combine complexities and costs
@@ -78,14 +78,14 @@ file_util.save_pandas_csv(estimated_pareto, 'estimated_pareto.csv')
 pareto_points = np.array(list(zip(x, y)))
 
 
-with ProcessPool(nodes=args.processes) as pool:
+with ProcessPool(nodes=setup.processes) as pool:
     comm_cost = list(main_data['comm_cost'].values)
     complexity = list(main_data['complexity'].values)
     points = np.array(list(zip(comm_cost, complexity)))
     distances = pool.map(lambda point: calculate_min_distance(pareto_points, point), points)
     main_data['pareto_closeness'] = distances
 
-file_util.save_pandas_csv(main_data, '{0}.csv'.format(args.table_name))
+file_util.save_pandas_csv(main_data, 'main_data.csv')
 
 
 plot = (pn.ggplot(pn.aes(x='comm_cost', y='complexity')) +

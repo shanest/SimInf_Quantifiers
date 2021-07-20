@@ -12,7 +12,7 @@ def main():
     
     expressions = file_util.load_dill('expressions.dill')
     meanings = file_util.load_dill('meanings.dill')
-    universe = generator.generate_simplified_models(args.model_size)
+    universe = generator.generate_simplified_models(setup.model_size)
     
     filename = os.path.join(os.path.dirname(args.setup),'natural_expressions/{0}.json'.format(setup.name))
     
@@ -21,7 +21,7 @@ def main():
     
     natural_expressions = []
     for spec in specs:
-        natural_expressions.extend(parser.parse_expression_options(spec, args.model_size))
+        natural_expressions.extend(parser.parse_expression_options(spec, setup.model_size))
     
     natural_meanings = map(generator.MeaningCalculator(universe), natural_expressions)
     

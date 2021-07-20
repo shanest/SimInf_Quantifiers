@@ -70,19 +70,17 @@ def sample_mutated(languages, amount, expressions):
 
 def main(args):    
     setup = experiment_setups.parse(args.setup)
-    use_base_dir = False
-    dirname = fileutil.base_dir(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size) \
-                if use_base_dir else \
-              fileutil.run_dir(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size, args.name)
+    # use_base_dir = False
+    dirname = fileutil.run_dir(setup.dest_dir, setup.name, setup.max_quantifier_length, setup.model_size, setup.pareto_name)
     file_util = FileUtil(dirname)
     
     expressions = language_loader.load_all_evaluated_expressions(file_util)
     languages_0 = language_generator.generate_sampled(expressions, args.lang_size, int(args.sample_size/args.lang_size))
-    universe = generator.generate_simplified_models(args.model_size)
+    universe = generator.generate_simplified_models(setup.model_size)
 
     measure_complexity = SumComplexityMeasurer(args.lang_size, 1)
     measure_informativeness = SimMaxInformativenessMeasurer(universe)
-    pool = ProcessPool(nodes=args.processes)
+    pool = ProcessPool(nodes=setup.processes)
     languages = languages_0    #lanuages will be iteratively updated in subsequent loop
     
     for gen in range(args.generations):
@@ -115,11 +113,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Analyze")
     #common arguments
     parser.add_argument('--setup', help='Path to the setup json file.', required=True)
-    parser.add_argument('--max_quantifier_length', type=int, required=True)
-    parser.add_argument('--model_size', type=int, required=True)
-    parser.add_argument('--dest_dir', default='results')
-    parser.add_argument('--processes', default=4, type=int)
-    parser.add_argument('--name', default='run_0')
     #additional arguments
     parser.add_argument('--lang_size', type=int, required=True)
     parser.add_argument('--sample_size', type=int, required=True)

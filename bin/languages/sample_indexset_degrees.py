@@ -8,7 +8,7 @@ from siminf.languages.language_generator import random_combinations
 
 def main(args): 
     setup = experiment_setups.parse(args.setup)
-    dirname = fileutil.run_dir(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size, args.name)
+    dirname = fileutil.run_dir(setup.dest_dir, setup.name, setup.max_quantifier_length, setup.model_size, setup.natural_name)
     file_util_out = FileUtil(dirname)
     file_util_in = file_util_out.get_base_file_util()
 
@@ -39,11 +39,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Analyze")
     #common arguments
     parser.add_argument('--setup', help='Path to the setup json file.', required=True)
-    parser.add_argument('--max_quantifier_length', type=int, required=True)
-    parser.add_argument('--model_size', type=int, required=True)
-    parser.add_argument('--dest_dir', default='results')
-    parser.add_argument('--processes', default=4, type=int)
-    parser.add_argument('--name', default='run_0')
     #additional arguments    
     parser.add_argument('--indices', required=True)
     parser.add_argument('--max_words', type=int, required=True)
