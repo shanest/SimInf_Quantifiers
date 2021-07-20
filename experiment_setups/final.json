@@ -14,15 +14,15 @@
   "operators": [">f", "=f", ">", ">=", "=", "/", "subset", "intersection", "union", "card", "diff","+","-","and","or","not","%"],
   
   "-------set up of quantifiers, sizes, etc-------": "",
-  "max_quantifier_length": "4",
-  "model_size": "4",
+  "max_quantifier_length": "12",
+  "model_size": "10",
   "dest_dir": "results",
-  "processes": "4",
+  "processes": "8",
 
   "-------analysis methods--------": "",
   "comp_strat": "wordcomplexity",
   "inf_strat": "simmax",
-  "max_words": 5,
+  "max_words": 10,
   
   "-------set up of results, etc-------": "",
   

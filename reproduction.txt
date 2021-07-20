@@ -7,10 +7,10 @@ python bin/individual_quantifiers/measure_expression_conservativity.py --setup e
 
 python bin/individual_quantifiers/generate_natural_expressions.py --setup experiment_setups/final.json
 
-python bin/languages/generate_evolutionary.py --setup=experiment_setups/final.json --lang_size=8 --sample_size=16 --generations=2 --max_mutations=2
+python bin/languages/generate_evolutionary.py --setup=experiment_setups/final.json --lang_size 10 --sample_size 2000 --generations 100 --max_mutations 3
 
 # generate languages with varying degrees of naturalness
-python bin/languages/sample_indexset_degrees.py --setup experiment_setups/final.json --indices natural --sample 100
+python bin/languages/sample_indexset_degrees.py --setup experiment_setups/final.json --indices natural --sample 8000
 
 # measure complexity and informativeness
 python bin/languages/measure.py --setup experiment_setups/final.json
