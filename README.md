@@ -65,46 +65,46 @@ This will put the results of said code in results/[ExperimentSetupName]\_length=
 
 #### generate individual quantifiers
 
-`python bin/individual_quantifiers/generate.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4`
+`python bin/individual_quantifiers/generate.py --setup experiment_setups/final.json`
 
 
 #### measure properties of them
 
-`python bin/individual_quantifiers/measure_expression_complexity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4`
+`python bin/individual_quantifiers/measure_expression_complexity.py --setup experiment_setups/final.json`
 
-`python bin/individual_quantifiers/measure_expression_monotonicity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4`
+`python bin/individual_quantifiers/measure_expression_monotonicity.py --setup experiment_setups/final.json`
 
-`python bin/individual_quantifiers/measure_expression_conservativity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4`
+`python bin/individual_quantifiers/measure_expression_conservativity.py --setup experiment_setups/final.json`
 
 
 #### generate pseudo-natural quantifiers
 
-`python bin/individual_quantifiers/generate_natural_expressions.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4  `
+`python bin/individual_quantifiers/generate_natural_expressions.py --setup experiment_setups/final.json`
 
 
 #### run evolutionary algorithm to estimate pareto frontier
 
-`python bin/languages/generate_evolutionary.py --setup=experiment_setups/final.json --max_quantifier_length=4 --model_size=4 --lang_size=8 --sample_size=16 --generations=2 --max_mutations=2 --name=evolutionary`
+`python bin/languages/generate_evolutionary.py --setup=experiment_setups/final.json --lang_size=8 --sample_size=16 --generations=2 --max_mutations=2`
 
 
 #### generate languages with varying degrees of naturalness
 
-`python bin/languages/sample_indexset_degrees.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4 --indices natural --name natural_gradual --max_words 5 --sample 100`
+`python bin/languages/sample_indexset_degrees.py --setup experiment_setups/final.json --indices natural --sample 100`
 
 #### measure complexity and informativeness
 
-`python bin/languages/measure.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4 --max_words=5 --name natural_gradual --comp_strat wordcomplexity --inf_strat simmax`
+`python bin/languages/measure.py --setup experiment_setups/final.json`
 
 #### measure monotonicity and conservativity
 
-`python bin/languages/measure_monotonicity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4 --name natural_gradual`
+`python bin/languages/measure_monotonicity.py --setup experiment_setups/final.json`
 
-`python bin/languages/measure_conservativity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4 --name natural_gradual`
+`python bin/languages/measure_conservativity.py --setup experiment_setups/final.json`
 
 
 #### analysis
 
-`python bin/languages/analysis/analysis.py --setup experiment_setups/final.json --model_size 4 --max_quantifier_length 4 --name natural_gradual --comp_strat wordcomplexity --inf_strat simmax --pareto evolutionary --table_name main_data`
+`python bin/languages/analysis/analysis.py --setup experiment_setups/final.json`
 
 # TODOs
 

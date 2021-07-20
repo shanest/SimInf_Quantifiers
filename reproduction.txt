@@ -10,7 +10,7 @@ python bin/individual_quantifiers/generate_natural_expressions.py --setup experi
 python bin/languages/generate_evolutionary.py --setup=experiment_setups/final.json --lang_size=8 --sample_size=16 --generations=2 --max_mutations=2
 
 # generate languages with varying degrees of naturalness
-python bin/languages/sample_indexset_degrees.py --setup experiment_setups/final.json --indices natural --max_words 5 --sample 100
+python bin/languages/sample_indexset_degrees.py --setup experiment_setups/final.json --indices natural --sample 100
 
 # measure complexity and informativeness
 python bin/languages/measure.py --setup experiment_setups/final.json

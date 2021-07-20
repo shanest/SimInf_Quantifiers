@@ -20,7 +20,7 @@ def main(args):
     naturalness = []
     sizes = []
 
-    for lang_size in range(1,args.max_words+1):
+    for lang_size in range(1,setup.max_words+1):
         for i in range(args.sample):
             len_natural = random.randint(0,lang_size)
             len_random = lang_size - len_natural
@@ -41,7 +41,6 @@ if __name__ == "__main__":
     parser.add_argument('--setup', help='Path to the setup json file.', required=True)
     #additional arguments    
     parser.add_argument('--indices', required=True)
-    parser.add_argument('--max_words', type=int, required=True)
     parser.add_argument('--sample', type=int, required=True)
     #parse
     args = parser.parse_args()
