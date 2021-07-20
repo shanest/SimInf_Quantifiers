@@ -1,7 +1,9 @@
 
 # Simplicity vs. Informativeness trade-off for quantifiers
 
-This code accompanies my Master's thesis 'The influence of the simplicity/informativeness trade-off on the semantic typology of quantifiers' for the MSc Logic at the University of Amsterdam.
+This code accompanies XXX.  
+
+**Acknowledgments:** The code was initially developed by Wouter Posdijk for his MSc Logic thesis in Amsterdam (see the repo this is forked from).  Qi C Guo also provided significant development time.
 
 The code consists of the following parts:
 
@@ -33,6 +35,7 @@ Measuring of languages:
 - Naturalness
 - Optimality wrt a Pareto front
 
+
 ## Requirements
 
 Python >=3.5. Get the required packages by running `pip install`.
@@ -43,8 +46,6 @@ conda create --name siminf python=3.7
 conda activate siminf
 conda install --file requirements.txt -c conda-forge
 ```
-
-NB: if using a `conda` environment on macOS, you should additionally do `conda install python.app` and then use `pythonw` to run anything requiring visualization.  (See https://stackoverflow.com/questions/54282402/error-when-running-matplotlib-in-anaconda)
 
 
 ## Running the code
@@ -57,87 +58,58 @@ Almost all code requires three main parameters:
 
 This will put the results of said code in results/[ExperimentSetupName]\_length=[length]\_size=[size]
 
-### Generation
+### Replicating the experimental results
 
-[`generate.py`](Code/IndividualQuantifiers/generate.py) is used to generate expressions.
+`export PYTHONPATH=$PYTHONPATH:./`
 
-[`merge_presuppositions.py`](Code/IndividualQuantifiers/merge_presuppositions.py) is used to combine these into presuppositions. This requires expressions.
 
-[`languages.py`](Code/Languages/languages.py) is used to sample languages. This requires expressions.
+#### generate individual quantifiers
 
-[`generate_evolutionary.py`](Code/Languages/generate_evolutionary.py`) is used to approximate the Pareto Front using an evolutionary algorithm. This requires expressions and their complexities.
+`python bin/individual_quantifiers/generate.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4`
 
-### Measuring expressions
 
-Expressions are measured using the `Code/IndividualQuantifiers/measure_expression_*.py` files. This saves the results in a separate file.
+#### measure properties of them
 
-### Measuring presuppositions
-The simplicity and informativeness of quantifiers with presuppositions are measured using [`measure.py`](Code/IndividualQuantifiers/measure.py). 
+`python bin/individual_quantifiers/measure_expression_complexity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4`
 
-### Measuring languages
-Languages are measured using the `Code/IndividualQuantifiers/measure_*.py` files. Most require the expressions to be measured first (e.g. to measure the monotonicity of languages one first needs to measure the monotonicity of expressions).
+`python bin/individual_quantifiers/measure_expression_monotonicity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4`
 
-## Running the experiments
+`python bin/individual_quantifiers/measure_expression_conservativity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4`
 
-### Individual Quantifiers
 
-```
-Code/IndividualQuantifiers/generate.py ExperimentSetups/Logical.json 12 10
-Code/IndividualQuantfiers/measure_expression_complexity.py ExperimentSetups/Logical.json 12 10 
-Code/IndividualQuantifiers/measure_expression_informativeness.py ExperimentSetups/Logical.json 12 10
-Code/IndividualQuantifiers/Analysis/plot_expressions.py ExperimentSetups/Logical.json 12 10
-```
+#### generate pseudo-natural quantifiers
 
-### Presuppositions
-```
-Code/IndividualQuantifiers/generate.py ExperimentSetups/Logical.json 7 10
-Code/IndividualQuantifiers/merge_presuppositions.py ExperimentSetups/Logical.json 7 10
-Code/IndividualQuantifiers/measure.py ExperimentSetups/Logical.json 7 10
-```
+`python bin/individual_quantifiers/generate_natural_expressions.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4  `
 
-### Languages setup
-```
-# Generate the expressions and measure them
-Code/IndividualQuantifiers/generate.py ExperimentSetups/Final.json 12 10
-Code/IndividualQuantfiers/measure_expression_complexity.py ExperimentSetups/Final.json 12 10 
-Code/IndividualQuantifiers/measure_expression_monotonicity.py ExperimentSetups/Final.json 12 10
-Code/IndividualQuantifiers/measure_expression_conservativity.py ExperimentSetups/Final.json 12 10
-Code/IndividualQuantifiers/generate_natural_expressions.py ExperimentSetups/Final.json 12 10
 
-# Generate using evolutionary algorithm: 2000 samples, 100 generations
-Code/Languages/generate_evolutionary ExperimentSetups/Final.json 12 10 10 2000 100 -m 3 --name=evolutionary
+#### run evolutionary algorithm to estimate pareto frontier
 
-```
+`python bin/languages/generate_evolutionary.py --setup=experiment_setups/final.json --max_quantifier_length=4 --model_size=4 --lang_size=8 --sample_size=16 --generations=2 --max_mutations=2 --name=evolutionary`
 
-### Languages: Experiment 1
-```
-# Sample the quasi-natural languages
-Code/Languages/Languages.py --indices=natural ExperimentSetups/Final.json 12 10 10 --sample=2000 --name=natural_2000
-Code/Languages/measure.py ExperimentSetups/Final.json 12 10 10 --name=natural_2000 wordcomplexity simmax
 
-# Sample random languages
-Code/Languages/Languages.py ExperimentSetups/Final.json 12 10 10 --sample=2000 --name=regular_2000
-Code/Languages/measure.py ExperimentSetups/Final.json 12 10 10 --name=regular_2000 wordcomplexity simmax
+#### generate languages with varying degrees of naturalness
 
-# Measure optimality and compose into pandas table
-Code/Languages/Analysis/measure_moo_performance.py ExperimentSetups/Final.json 12 10 exp1 evolutionary_2000 natural_2000 regular_2000
-```
+`python bin/languages/sample_indexset_degrees.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4 --indices natural --name natural_gradual --max_words 5 --sample 100`
 
-This yields the pandas table `exp1.csv`
+#### measure complexity and informativeness
 
-### Languages: Experiment 2
-```
-# Sample languages with a uniform distribution over naturalness
-Code/Languages/sample_indexset_degrees.py ExperimentSetups/Final.json 12 10 natural 10 8000 --name=natural_gradual_2000
+`python bin/languages/measure.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4 --max_words=5 --name natural_gradual --comp_strat wordcomplexity --inf_strat simmax`
 
-# Measure the various properties
-Code/Languages/measure.py ExperimentSetups/Final.json 12 10 10 --name=natural_gradual_2000 wordcomplexity simmax
-Code/Languages/measure_monotonicity.py ExperimentSetups/Final.json 12 10 10 --name=natural_gradual_2000
-Code/Languages/measure_conservativity.py ExperimentSetups/Final.json 12 10 10 --name=natural_gradual_2000
+#### measure monotonicity and conservativity
 
-# Measure optimality and compose into pandas table
-Code/Languages/Analysis/measure_moo_performance.py ExperimentSetups/Final.json 12 10 exp2 evolutionary_2000 natural_gradual_2000
-```
+`python bin/languages/measure_monotonicity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4 --name natural_gradual`
 
-This yields the pandas table `exp2.csv`
+`python bin/languages/measure_conservativity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4 --name natural_gradual`
 
+
+#### analysis
+
+`python bin/languages/analysis/analysis.py --setup experiment_setups/final.json --model_size 4 --max_quantifier_length 4 --name natural_gradual --comp_strat wordcomplexity --inf_strat simmax --pareto evolutionary --table_name main_data`
+
+# TODOs
+
+* Experiment setups
+    - incorporate into the setup instead of command-line: max quantifier length, model size, comp strat, inf strat
+    - move from json to yaml?
+* General cleaning:
+* Finalize `siminf` as actual package
