@@ -1,3 +1,5 @@
+export PYTHONPATH=$PYTHONPATH:./
+
 python bin/individual_quantifiers/generate.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4  
 python bin/individual_quantifiers/measure_expression_complexity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4
 python bin/individual_quantifiers/measure_expression_monotonicity.py --setup experiment_setups/final.json --max_quantifier_length 4 --model_size 4

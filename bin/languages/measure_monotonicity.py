@@ -8,31 +8,25 @@ from siminf.fileutil import FileUtil
 
 from siminf.languages import language_loader
 
-def measure_monotonicity(languages):
-    #return numpy.mean([float64(word.monotonicity) for word in language])
+def measure_monotonicity(language):
     from numpy import float64, mean
-    mono_list = [float64(word.monotonicity) for word in languages]
+    mono_list = [float64(word.monotonicity) for word in language]
     mean_value = mean(mono_list)
     return mean_value
 
-def measure_monotonicity(monotonicity_list):
-    from numpy import mean
-    value = mean(monotonicity_list)
-    return value
 
 def main(args):
     setup = experiment_setups.parse(args.setup)
     dirname = fileutil.run_dir(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size, args.name)
     file_util = FileUtil(dirname)
-    #languages = language_loader.load_languages(file_util)
-    languages = language_loader.load_all_evaluated_expressions(file_util) # to replace previous load logic
-    monotonicity_list = [float64(word.monotonicity) for word in languages]
+    languages = language_loader.load_languages(file_util)
     
     print("args.processes={0}".format(args.processes))
     with ProcessPool(nodes=args.processes) as process_pool:
-        # monotonicities = process_pool.map(measure_monotonicity, languages)
-        monotonicities = process_pool.map(measure_monotonicity, monotonicity_list)
+        monotonicities = process_pool.map(measure_monotonicity, languages)
 
+    print(len(languages))
+    print(len(monotonicities))
     file_util.dump_dill(monotonicities, 'monotonicity.dill')
 
     print("measure_monotonicity.py finished.")

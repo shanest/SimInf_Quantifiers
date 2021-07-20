@@ -10,6 +10,8 @@ def init(use_base_dir=False):
     parser.add_argument('--max_quantifier_length', type=int, required=True)
     parser.add_argument('--model_size', type=int, required=True)
     parser.add_argument('--dest_dir', default='results')
+    parser.add_argument('--comp_strat', required=True)
+    parser.add_argument('--inf_strat', required=True)
     parser.add_argument('--processes', default=4, type=int)
     parser.add_argument('--name', default='run_0')
     

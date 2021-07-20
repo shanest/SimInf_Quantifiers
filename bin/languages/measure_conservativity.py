@@ -9,28 +9,21 @@ from siminf import experiment_setups
 from siminf import analysisutil
 from siminf.languages import language_loader
 
-def measure_conservativity(languages):
+def measure_conservativity(language):
     from numpy import float64
-    float_list = [float64(word.conservativity) for word in languages]
-    return mean([float64(word.conservativity) for word in languages])
+    cons_list = [float64(word.conservativity) for word in language]
+    return mean(cons_list)
 
-def measure_conservativity(conservativity_list):
-    from numpy import mean
-    value = mean(conservativity_list)
-    return value
 
 def main(args):
     setup = experiment_setups.parse(args.setup)
     dirname = fileutil.run_dir(args.dest_dir, setup.name, args.max_quantifier_length, args.model_size, args.name)
     file_util = FileUtil(dirname)
     
-    #languages = LanguageLoader.load_languages(file_util)
-    languages = language_loader.load_all_evaluated_expressions(file_util)
-    conservativity_list = [float64(word.conservativity) for word in languages]
+    languages = language_loader.load_languages(file_util)
 
     with ProcessPool(nodes=args.processes) as process_pool:
-        # conservativities = process_pool.map(measure_conservativity, languages)
-        conservativities = process_pool.map(measure_conservativity, conservativity_list)
+        conservativities = process_pool.map(measure_conservativity, languages)
 
     file_util.dump_dill(conservativities, 'conservativity.dill')
     
