@@ -47,8 +47,6 @@ conda activate siminf
 conda install --file requirements.txt -c conda-forge
 ```
 
-NB: if using a `conda` environment on macOS, you should additionally do `conda install python.app` and then use `pythonw` to run anything requiring visualization.  (See https://stackoverflow.com/questions/54282402/error-when-running-matplotlib-in-anaconda)
-
 
 ## Running the code
 
@@ -97,3 +95,10 @@ This will put the results of said code in results/[ExperimentSetupName]\_length=
 #### analysis
 
 `python bin/languages/analysis/analysis.py --setup experiment_setups/final.json --model_size 4 --max_quantifier_length 4 --name natural_gradual --comp_strat wordcomplexity --inf_strat simmax --pareto evolutionary --table_name main_data`
+
+# TODOs
+
+* Experiment setups
+    - incorporate into the setup instead of command-line: max quantifier length, model size, comp strat, inf strat
+    - move from json to yaml?
+* General cleaning:
