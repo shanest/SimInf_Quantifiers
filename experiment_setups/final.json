@@ -3,6 +3,7 @@
   "name": "final",
   "pareto_name": "evolutionary",
   "natural_name": "natural_gradual",
+  "random_name": "random",
   "use_base_dir": "True",
 
   "lexical_quantifiers_filename": "English_quantifiers/logical.json",

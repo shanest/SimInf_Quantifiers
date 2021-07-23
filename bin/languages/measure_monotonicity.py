@@ -17,7 +17,7 @@ def measure_monotonicity(language):
 
 def main(args):
     setup = experiment_setups.parse(args.setup)
-    dirname = fileutil.run_dir(setup.dest_dir, setup.name, setup.max_quantifier_length, setup.model_size, setup.natural_name)
+    dirname = fileutil.run_dir(setup.dest_dir, setup.name, setup.max_quantifier_length, setup.model_size, args.name)
     file_util = FileUtil(dirname)
     languages = language_loader.load_languages(file_util)
     
@@ -32,6 +32,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Analyze")
     #common arguments
     parser.add_argument('--setup', help='Path to the setup json file.', required=True)
+    parser.add_argument('--name', required=True)
     #parse args
     args = parser.parse_args()
     main(args)

@@ -13,6 +13,7 @@ class ExperimentSetup:
         self.name = props['name']
         self.pareto_name = props['pareto_name']
         self.natural_name = props['natural_name']
+        self.random_name = props['random_name']
         
         self.lexical_quantifiers_filename = \
             path.join(path.dirname(props['setup_filename']), props['lexical_quantifiers_filename'])

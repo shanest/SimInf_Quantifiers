@@ -11,7 +11,7 @@ from siminf.fileutil import FileUtil
 def main(args):
     setup = experiment_setups.parse(args.setup)
     
-    file_util = FileUtil(fileutil.run_dir(setup.dest_dir, setup.name, setup.max_quantifier_length, setup.model_size, setup.natural_name))
+    file_util = FileUtil(fileutil.run_dir(setup.dest_dir, setup.name, setup.max_quantifier_length, setup.model_size, args.name))
     
     languages = language_loader.load_languages(file_util)
     
@@ -24,7 +24,7 @@ def main(args):
     elif setup.inf_strat == 'simmax':
         informativeness_measurer = SimMaxInformativenessMeasurer(universe)
     else:
-        raise ValueError('{0} is not a valid informativeness strategy.'.format(args.inf_strat))
+        raise ValueError('{0} is not a valid informativeness strategy.'.format(setup.inf_strat))
     
     if setup.comp_strat == 'wordcount':
         complexity_measurer = WordCountComplexityMeasurer(setup.max_words)
@@ -44,6 +44,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Measure Languages")
     parser.add_argument('--setup', help='Path to the setup json file.', required=True)
+    parser.add_argument('--name', required=True)
     args = parser.parse_args()
     
     main(args)

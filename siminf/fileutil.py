@@ -47,6 +47,10 @@ class FileUtil(object):
         os.makedirs(self.full_path('tables'), exist_ok=True)
         dataframe.to_csv(self.full_path('tables/{0}'.format(filename)))
 
+    def save_plot(self, plot, filename, **kwargs):
+        os.makedirs(self.full_path('figures'), exist_ok=True)
+        plot.save(self.full_path('figures/{}'.format(filename)), **kwargs)
+
     def load_pandas_csv(self, filename):
         return pandas.read_csv(self.full_path('tables/{0}'.format(filename)))
 
