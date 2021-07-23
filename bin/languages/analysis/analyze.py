@@ -19,10 +19,12 @@ def make_plot(data, color_variable, filename):
             pn.scale_color_cmap('cividis'))
     file_util.save_plot(plot, filename, width=6, height=4, dpi=300)
 
+
+"""
 make_plot(natural_data, 'naturalness', 'naturalness_with_pareto.png')
 make_plot(random_data, 'monotonicity', 'monotonicity_with_pareto.png')
 make_plot(random_data, 'conservativity', 'conservativity_with_pareto.png')
-
+"""
 
 def standardize(data, cols):
     for col in cols:
@@ -36,14 +38,29 @@ def fit_stat_model(formula, data):
     print(results.pvalues)
 
 
-def full_analysis(data, predictors):
-    data['optimality'] = data['pareto_closeness']
-    standardize(data,
-                ['pareto_closeness', 'naturalness', 'monotonicity', 'conservativity', 'optimality'])
+def full_analysis(data, predictors, num_bootstrap_samples=5000):
+    data['optimality'] = 1 - data['pareto_closeness']
+
+    # standardize(data, predictors + ['pareto_closeness', 'optimality'])
+
     for predictor in predictors:
-        fit_stat_model('optimality ~ {}'.format(predictor))
+        print(predictor)
+        r, _ = scipy.stats.pearsonr(data['optimality'], data[predictor])
+        print(r)
+        rs = [r]
+        for _ in range(num_bootstrap_samples):
+            bootstrap_sample = data.sample(n=len(data), replace=True)
+            r, _ = scipy.stats.pearsonr(bootstrap_sample['optimality'], bootstrap_sample[predictor])
+            rs.append(r)
+        print(scipy.stats.scoreatpercentile(rs, (2.5, 97.5)))
+
+    """
+    right_hands = predictors + ['*'.join(predictors)]
+    for rhs in right_hands:
+        fit_stat_model('optimality ~ {}'.format(rhs), data)
+    """
 
 
-predictors = ['monotonicity', 'conservativity', 'conservativity*monotonicity']
+predictors = ['monotonicity', 'conservativity']
 full_analysis(random_data, predictors)
-full_analysis(natural_data, predictors + ['naturalness', 'naturalness*conservativity*monotonicity'])
+full_analysis(natural_data, predictors + ['naturalness'])
