@@ -98,21 +98,26 @@ This will put the results of said code in results/[ExperimentSetupName]\_length=
 #### measure complexity and informativeness
 
 `python bin/languages/measure.py --setup experiment_setups/final.json --name natural_gradual`
+
 `python bin/languages/measure.py --setup experiment_setups/final.json --name random`
 
 #### measure monotonicity and conservativity
 
 `python bin/languages/measure_monotonicity.py --setup experiment_setups/final.json --name natural_gradual`
+
 `python bin/languages/measure_monotonicity.py --setup experiment_setups/final.json --name random`
 
 `python bin/languages/measure_conservativity.py --setup experiment_setups/final.json --name natural_gradual`
+
 `python bin/languages/measure_conservativity.py --setup experiment_setups/final.json --name random`
 
 
 #### analysis
 
 `python bin/languages/analysis/estimate_pareto.py --setup experiment_setups/final.json`
+
 `python bin/languages/analysis/analyze.py --setup experiment_setups/final.json`
+
 
 # TODOs
 
