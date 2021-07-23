@@ -84,32 +84,38 @@ This will put the results of said code in results/[ExperimentSetupName]\_length=
 
 #### run evolutionary algorithm to estimate pareto frontier
 
-`python bin/languages/generate_evolutionary.py --setup=experiment_setups/final.json --lang_size=8 --sample_size=16 --generations=2 --max_mutations=2`
+`python bin/languages/generate_evolutionary.py --setup=experiment_setups/final.json --lang_size 10 --sample_size 2000 --generations 100 --max_mutations 3`
 
 
 #### generate languages with varying degrees of naturalness
 
-`python bin/languages/sample_indexset_degrees.py --setup experiment_setups/final.json --indices natural --sample 100`
+`python bin/languages/sample_indexset_degrees.py --setup experiment_setups/final.json --indices natural --sample 8000`
+
+#### generate "random" languages
+`python bin/languages/languages.py --setup experiment_setups/final.json --sample 2000`
+
 
 #### measure complexity and informativeness
 
-`python bin/languages/measure.py --setup experiment_setups/final.json`
+`python bin/languages/measure.py --setup experiment_setups/final.json --name natural_gradual`
+`python bin/languages/measure.py --setup experiment_setups/final.json --name random`
 
 #### measure monotonicity and conservativity
 
-`python bin/languages/measure_monotonicity.py --setup experiment_setups/final.json`
+`python bin/languages/measure_monotonicity.py --setup experiment_setups/final.json --name natural_gradual`
+`python bin/languages/measure_monotonicity.py --setup experiment_setups/final.json --name random`
 
-`python bin/languages/measure_conservativity.py --setup experiment_setups/final.json`
+`python bin/languages/measure_conservativity.py --setup experiment_setups/final.json --name natural_gradual`
+`python bin/languages/measure_conservativity.py --setup experiment_setups/final.json --name random`
 
 
 #### analysis
 
-`python bin/languages/analysis/analysis.py --setup experiment_setups/final.json`
+`python bin/languages/analysis/estimate_pareto.py --setup experiment_setups/final.json`
+`python bin/languages/analysis/analyze.py --setup experiment_setups/final.json`
 
 # TODOs
 
-* Experiment setups
-    - incorporate into the setup instead of command-line: max quantifier length, model size, comp strat, inf strat
-    - move from json to yaml?
+* Experiment setups: move from json to yaml?
 * General cleaning:
 * Finalize `siminf` as actual package
