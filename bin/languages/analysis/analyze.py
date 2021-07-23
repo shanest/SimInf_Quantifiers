@@ -37,10 +37,8 @@ def fit_stat_model(formula, data):
     print(results.pvalues)
 
 
-def full_analysis(data, predictors, num_bootstrap_samples=5000):
-    data['optimality'] = 1 - data['pareto_closeness']
-
-    # standardize(data, predictors + ['pareto_closeness', 'optimality'])
+def full_analysis(data, predictors, num_bootstrap_samples=10000):
+    data['optimality'] = -data['pareto_closeness']
 
     for predictor in predictors:
         print(predictor)
