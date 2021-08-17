@@ -16,10 +16,12 @@ def make_plot(data, color_variable, filename):
     plot = (pn.ggplot(pn.aes(x='comm_cost', y='complexity')) +
             pn.geom_line(size=1, data=pareto_data) +
             pn.geom_point(pn.aes(color=color_variable), size=1.0, stroke=0.0, alpha=1.0, data=data) +
+            pn.xlab("Communicative Cost") + 
+            pn.ylab("Complexity") +
+            pn.labs(color=(color_variable.capitalize() + "\n")) +
             pn.scale_color_cmap('cividis'))
     file_util.save_plot(plot, filename, width=6, height=4, dpi=300)
 
-"""
 make_plot(natural_data, 'naturalness', 'naturalness_with_pareto.png')
 make_plot(random_data, 'monotonicity', 'monotonicity_with_pareto.png')
 make_plot(random_data, 'conservativity', 'conservativity_with_pareto.png')
@@ -36,9 +38,12 @@ def fit_stat_model(formula, data):
     print(results.summary())
     print(results.pvalues)
 
+"""
+
 
 def full_analysis(data, predictors, num_bootstrap_samples=10000):
-    data['optimality'] = -data['pareto_closeness']
+    data['optimality'] = 1 - data['pareto_closeness'] / np.sqrt(2)
+    data['monotonicity * conservativity'] = data['monotonicity'] * data['conservativity']
 
     for predictor in predictors:
         print(predictor)
@@ -53,7 +58,7 @@ def full_analysis(data, predictors, num_bootstrap_samples=10000):
             print(scipy.stats.scoreatpercentile(rs, (2.5, 97.5)))
 
 
-predictors = ['monotonicity', 'conservativity']
+predictors = ['monotonicity', 'conservativity', 'monotonicity * conservativity']
 print('random data')
 full_analysis(random_data, predictors)
 print()

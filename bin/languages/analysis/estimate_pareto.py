@@ -34,15 +34,6 @@ complexity = list(pareto_data['complexity'].values) + list(natural_data['complex
 comm_cost = list(pareto_data['comm_cost'].values) + list(natural_data['comm_cost'].values) + list(random_data['comm_cost'].values)
 
 
-def calculate_min_distance(pareto_front, point):
-    min_dist = np.Infinity
-    for pareto_point in pareto_front:
-        dist = norm(pareto_point-point)
-        if dist < min_dist:
-            min_dist = dist
-    return min_dist
-
-
 # estimate pareto frontier
 # TODO: clean this up!!
 dominating_indices = pygmo.non_dominated_front_2d(list(zip(complexity,comm_cost)))
@@ -90,8 +81,9 @@ def measure_closeness(data, pareto_frontier):
         comm_cost = list(data['comm_cost'].values)
         complexity = list(data['complexity'].values)
         points = np.array(list(zip(comm_cost, complexity)))
-        distances = pool.map(lambda point: calculate_min_distance(pareto_frontier, point), points)
-        data['pareto_closeness'] = distances
+        distances = scipy.spatial.distance.cdist(points, pareto_frontier)
+        min_distances = np.min(distances, axis=1)
+        data['pareto_closeness'] = min_distances
 
 measure_closeness(natural_data, pareto_points)
 measure_closeness(random_data, pareto_points)

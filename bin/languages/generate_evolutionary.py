@@ -57,7 +57,7 @@ def sample_mutated(languages, amount, expressions):
             mutated_language = language
             for j in range(num_mutations):
                 mutated_language = mutate(mutated_language, expressions)
-            mutated_languages.append(mutate(language, expressions))
+            mutated_languages.append(mutated_language)
 
     for i in range(amount_random):
         language = random.choice(languages)
